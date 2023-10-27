@@ -1,6 +1,7 @@
 # DashFloat
 
 [![gh-actions](https://github.com/DashFloat/dashfloat/workflows/CI/badge.svg)](https://github.com/DashFloat/dashfloat/actions?workflow=CI)
+[![codecov](https://codecov.io/gh/DashFloat/dashfloat/graph/badge.svg?token=S6SGJPYIW7)](https://codecov.io/gh/DashFloat/dashfloat)
 
 To start your Phoenix server:
 
