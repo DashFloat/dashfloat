@@ -134,6 +134,15 @@
           {Credo.Check.Readability.SeparateAliasRequire, []},
           {Credo.Check.Readability.SinglePipe, []},
           {Credo.Check.Readability.SpaceAfterCommas, []},
+          {Credo.Check.Readability.Specs,
+           [
+             files: %{
+               excluded: [
+                 ~r"/lib/dashfloat_web/controllers/",
+                 ~r"/lib/dashfloat_web/live/"
+               ]
+             }
+           ]},
           {Credo.Check.Readability.StrictModuleLayout, []},
           {Credo.Check.Readability.StringSigils, []},
           {Credo.Check.Readability.TrailingBlankLine, []},
@@ -209,15 +218,6 @@
           {Credo.Check.Readability.AliasAs, []},
           {Credo.Check.Readability.BlockPipe, []},
           {Credo.Check.Readability.SingleFunctionToBlockPipe, []},
-          {Credo.Check.Readability.Specs,
-           [
-             files: %{
-               excluded: [
-                 ~r"/lib/dashfloat_web/controllers/",
-                 ~r"/lib/dashfloat_web/live/"
-               ]
-             }
-           ]},
           {Credo.Check.Readability.OnePipePerLine, []},
           {Credo.Check.Refactor.ABCSize, []},
           {Credo.Check.Refactor.AppendSingleItem, []},
