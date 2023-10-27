@@ -40,6 +40,7 @@ defmodule DashFloat.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:credo, "1.7.0", only: [:dev, :test], runtime: false},
       {:dns_cluster, "0.1.1"},
       {:ecto_sql, "3.10.2"},
       {:esbuild, "0.7.1", runtime: Mix.env() == :dev},
@@ -78,8 +79,8 @@ defmodule DashFloat.MixProject do
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind default", "esbuild default"],
       "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"],
-      lint: ["format"],
-      "lint.ci": ["format --check-formatted"]
+      lint: ["format", "credo"],
+      "lint.ci": ["format --check-formatted", "credo"]
     ]
   end
 end
