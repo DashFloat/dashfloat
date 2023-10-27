@@ -9,7 +9,15 @@ defmodule DashFloat.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test,
+        "coveralls.cobertura": :test
+      ]
     ]
   end
 
@@ -35,6 +43,7 @@ defmodule DashFloat.MixProject do
       {:dns_cluster, "0.1.1"},
       {:ecto_sql, "3.10.2"},
       {:esbuild, "0.7.1", runtime: Mix.env() == :dev},
+      {:excoveralls, "0.18.0", only: :test},
       {:finch, "0.16.0"},
       {:floki, "0.35.2", only: :test},
       {:gettext, "0.23.1"},
