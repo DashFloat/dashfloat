@@ -1,10 +1,11 @@
 defmodule DashFloatWeb.UserAuthTest do
   use DashFloatWeb.ConnCase, async: true
 
-  alias Phoenix.LiveView
+  import DashFloat.Factories.IdentityFactory
+
   alias DashFloat.Identity
   alias DashFloatWeb.UserAuth
-  import DashFloat.IdentityFixtures
+  alias Phoenix.LiveView
 
   @remember_me_cookie "_dash_float_web_user_remember_me"
 
@@ -14,13 +15,14 @@ defmodule DashFloatWeb.UserAuthTest do
       |> Map.replace!(:secret_key_base, DashFloatWeb.Endpoint.config(:secret_key_base))
       |> init_test_session(%{})
 
-    %{user: user_fixture(), conn: conn}
+    %{user: insert(:user), conn: conn}
   end
 
   describe "log_in_user/3" do
     test "stores the user token in the session", %{conn: conn, user: user} do
       conn = UserAuth.log_in_user(conn, user)
       assert token = get_session(conn, :user_token)
+      # credo:disable-for-next-line Credo.Check.Readability.NestedFunctionCalls
       assert get_session(conn, :live_socket_id) == "users_sessions:#{Base.url_encode64(token)}"
       assert redirected_to(conn) == ~p"/"
       assert Identity.get_user_by_session_token(token)
@@ -48,7 +50,7 @@ defmodule DashFloatWeb.UserAuthTest do
 
   describe "logout_user/1" do
     test "erases session and cookies", %{conn: conn, user: user} do
-      user_token = Identity.generate_user_session_token(user)
+      {:ok, user_token} = Identity.generate_user_session_token(user)
 
       conn =
         conn
@@ -85,7 +87,7 @@ defmodule DashFloatWeb.UserAuthTest do
 
   describe "fetch_current_user/2" do
     test "authenticates user from session", %{conn: conn, user: user} do
-      user_token = Identity.generate_user_session_token(user)
+      {:ok, user_token} = Identity.generate_user_session_token(user)
       conn = conn |> put_session(:user_token, user_token) |> UserAuth.fetch_current_user([])
       assert conn.assigns.current_user.id == user.id
     end
@@ -105,12 +107,13 @@ defmodule DashFloatWeb.UserAuthTest do
       assert conn.assigns.current_user.id == user.id
       assert get_session(conn, :user_token) == user_token
 
-      assert get_session(conn, :live_socket_id) ==
-               "users_sessions:#{Base.url_encode64(user_token)}"
+      # credo:disable-for-next-line Credo.Check.Readability.NestedFunctionCalls
+      session = "users_sessions:#{Base.url_encode64(user_token)}"
+      assert get_session(conn, :live_socket_id) == session
     end
 
     test "does not authenticate if data is missing", %{conn: conn, user: user} do
-      _ = Identity.generate_user_session_token(user)
+      {:ok, _user_token} = Identity.generate_user_session_token(user)
       conn = UserAuth.fetch_current_user(conn, [])
       refute get_session(conn, :user_token)
       refute conn.assigns.current_user
@@ -119,7 +122,7 @@ defmodule DashFloatWeb.UserAuthTest do
 
   describe "on_mount: mount_current_user" do
     test "assigns current_user based on a valid user_token", %{conn: conn, user: user} do
-      user_token = Identity.generate_user_session_token(user)
+      {:ok, user_token} = Identity.generate_user_session_token(user)
       session = conn |> put_session(:user_token, user_token) |> get_session()
 
       {:cont, updated_socket} =
@@ -139,7 +142,7 @@ defmodule DashFloatWeb.UserAuthTest do
     end
 
     test "assigns nil to current_user assign if there isn't a user_token", %{conn: conn} do
-      session = conn |> get_session()
+      session = get_session(conn)
 
       {:cont, updated_socket} =
         UserAuth.on_mount(:mount_current_user, %{}, session, %LiveView.Socket{})
@@ -150,7 +153,7 @@ defmodule DashFloatWeb.UserAuthTest do
 
   describe "on_mount: ensure_authenticated" do
     test "authenticates current_user based on a valid user_token", %{conn: conn, user: user} do
-      user_token = Identity.generate_user_session_token(user)
+      {:ok, user_token} = Identity.generate_user_session_token(user)
       session = conn |> put_session(:user_token, user_token) |> get_session()
 
       {:cont, updated_socket} =
@@ -173,7 +176,7 @@ defmodule DashFloatWeb.UserAuthTest do
     end
 
     test "redirects to login page if there isn't a user_token", %{conn: conn} do
-      session = conn |> get_session()
+      session = get_session(conn)
 
       socket = %LiveView.Socket{
         endpoint: DashFloatWeb.Endpoint,
@@ -187,7 +190,7 @@ defmodule DashFloatWeb.UserAuthTest do
 
   describe "on_mount: :redirect_if_user_is_authenticated" do
     test "redirects if there is an authenticated  user ", %{conn: conn, user: user} do
-      user_token = Identity.generate_user_session_token(user)
+      {:ok, user_token} = Identity.generate_user_session_token(user)
       session = conn |> put_session(:user_token, user_token) |> get_session()
 
       assert {:halt, _updated_socket} =
@@ -200,7 +203,7 @@ defmodule DashFloatWeb.UserAuthTest do
     end
 
     test "doesn't redirect if there is no authenticated user", %{conn: conn} do
-      session = conn |> get_session()
+      session = get_session(conn)
 
       assert {:cont, _updated_socket} =
                UserAuth.on_mount(

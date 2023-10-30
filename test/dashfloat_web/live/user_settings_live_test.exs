@@ -1,15 +1,18 @@
 defmodule DashFloatWeb.UserSettingsLiveTest do
-  use DashFloatWeb.ConnCase
+  use DashFloatWeb.ConnCase, async: true
+
+  import DashFloat.Factories.IdentityFactory
+  import Phoenix.LiveViewTest
 
   alias DashFloat.Identity
-  import Phoenix.LiveViewTest
-  import DashFloat.IdentityFixtures
+  alias DashFloat.TestHelpers.DataHelper
+  alias DashFloat.TestHelpers.IdentityHelper
 
   describe "Settings page" do
     test "renders settings page", %{conn: conn} do
       {:ok, _lv, html} =
         conn
-        |> log_in_user(user_fixture())
+        |> log_in_user(insert(:user))
         |> live(~p"/users/settings")
 
       assert html =~ "Change Email"
@@ -27,13 +30,13 @@ defmodule DashFloatWeb.UserSettingsLiveTest do
 
   describe "update email form" do
     setup %{conn: conn} do
-      password = valid_user_password()
-      user = user_fixture(%{password: password})
+      password = DataHelper.password()
+      user = insert(:user, hashed_password: Bcrypt.hash_pwd_salt(password))
       %{conn: log_in_user(conn, user), user: user, password: password}
     end
 
     test "updates the user email", %{conn: conn, password: password, user: user} do
-      new_email = unique_user_email()
+      new_email = DataHelper.email()
 
       {:ok, lv, _html} = live(conn, ~p"/users/settings")
 
@@ -84,13 +87,13 @@ defmodule DashFloatWeb.UserSettingsLiveTest do
 
   describe "update password form" do
     setup %{conn: conn} do
-      password = valid_user_password()
-      user = user_fixture(%{password: password})
+      password = DataHelper.password()
+      user = insert(:user, hashed_password: Bcrypt.hash_pwd_salt(password))
       %{conn: log_in_user(conn, user), user: user, password: password}
     end
 
     test "updates the user password", %{conn: conn, user: user, password: password} do
-      new_password = valid_user_password()
+      new_password = DataHelper.password()
 
       {:ok, lv, _html} = live(conn, ~p"/users/settings")
 
@@ -127,13 +130,13 @@ defmodule DashFloatWeb.UserSettingsLiveTest do
         |> render_change(%{
           "current_password" => "invalid",
           "user" => %{
-            "password" => "too short",
+            "password" => "short",
             "password_confirmation" => "does not match"
           }
         })
 
       assert result =~ "Change Password"
-      assert result =~ "should be at least 12 character(s)"
+      assert result =~ "should be at least 8 character(s)"
       assert result =~ "does not match password"
     end
 
@@ -145,14 +148,14 @@ defmodule DashFloatWeb.UserSettingsLiveTest do
         |> form("#password_form", %{
           "current_password" => "invalid",
           "user" => %{
-            "password" => "too short",
+            "password" => "short",
             "password_confirmation" => "does not match"
           }
         })
         |> render_submit()
 
       assert result =~ "Change Password"
-      assert result =~ "should be at least 12 character(s)"
+      assert result =~ "should be at least 8 character(s)"
       assert result =~ "does not match password"
       assert result =~ "is not valid"
     end
@@ -160,11 +163,11 @@ defmodule DashFloatWeb.UserSettingsLiveTest do
 
   describe "confirm email" do
     setup %{conn: conn} do
-      user = user_fixture()
-      email = unique_user_email()
+      user = insert(:user)
+      email = DataHelper.email()
 
       token =
-        extract_user_token(fn url ->
+        IdentityHelper.extract_user_token(fn url ->
           Identity.deliver_user_update_email_instructions(%{user | email: email}, user.email, url)
         end)
 

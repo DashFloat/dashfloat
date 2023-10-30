@@ -1,10 +1,10 @@
 defmodule DashFloatWeb.UserForgotPasswordLiveTest do
-  use DashFloatWeb.ConnCase
+  use DashFloatWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import DashFloat.IdentityFixtures
+  import DashFloat.Factories.IdentityFactory
 
-  alias DashFloat.Identity
+  alias DashFloat.Identity.Schemas.UserToken
   alias DashFloat.Repo
 
   describe "Forgot password page" do
@@ -19,7 +19,7 @@ defmodule DashFloatWeb.UserForgotPasswordLiveTest do
     test "redirects if already logged in", %{conn: conn} do
       result =
         conn
-        |> log_in_user(user_fixture())
+        |> log_in_user(insert(:user))
         |> live(~p"/users/reset_password")
         |> follow_redirect(conn, ~p"/")
 
@@ -29,7 +29,7 @@ defmodule DashFloatWeb.UserForgotPasswordLiveTest do
 
   describe "Reset link" do
     setup do
-      %{user: user_fixture()}
+      %{user: insert(:user)}
     end
 
     test "sends a new reset password token", %{conn: conn, user: user} do
@@ -43,7 +43,7 @@ defmodule DashFloatWeb.UserForgotPasswordLiveTest do
 
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
 
-      assert Repo.get_by!(Identity.UserToken, user_id: user.id).context ==
+      assert Repo.get_by!(UserToken, user_id: user.id).context ==
                "reset_password"
     end
 
@@ -57,7 +57,7 @@ defmodule DashFloatWeb.UserForgotPasswordLiveTest do
         |> follow_redirect(conn, "/")
 
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
-      assert Repo.all(Identity.UserToken) == []
+      assert Repo.all(UserToken) == []
     end
   end
 end

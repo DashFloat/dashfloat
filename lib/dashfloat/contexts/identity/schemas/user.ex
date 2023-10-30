@@ -1,6 +1,23 @@
-defmodule DashFloat.Identity.User do
+defmodule DashFloat.Identity.Schemas.User do
+  @moduledoc """
+  A User in the system.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
+
+  alias __MODULE__
+
+  @type t :: %__MODULE__{
+          __meta__: Ecto.Schema.Metadata.t(),
+          id: integer() | nil,
+          email: String.t() | nil,
+          password: String.t() | nil,
+          hashed_password: String.t() | nil,
+          confirmed_at: NaiveDateTime.t() | nil,
+          inserted_at: NaiveDateTime.t() | nil,
+          updated_at: NaiveDateTime.t() | nil
+        }
 
   schema "users" do
     field :email, :string
@@ -8,7 +25,7 @@ defmodule DashFloat.Identity.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
 
-    timestamps(type: :utc_datetime)
+    timestamps()
   end
 
   @doc """
@@ -34,6 +51,7 @@ defmodule DashFloat.Identity.User do
       submitting the form), this option can be set to `false`.
       Defaults to `true`.
   """
+  @spec registration_changeset(t(), map(), Keyword.t()) :: Ecto.Changeset.t()
   def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email, :password])
@@ -52,7 +70,7 @@ defmodule DashFloat.Identity.User do
   defp validate_password(changeset, opts) do
     changeset
     |> validate_required([:password])
-    |> validate_length(:password, min: 12, max: 72)
+    |> validate_length(:password, min: 8, max: 72)
     # Examples of additional password validation:
     # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
     # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
@@ -92,6 +110,7 @@ defmodule DashFloat.Identity.User do
 
   It requires the email to change otherwise an error is added.
   """
+  @spec email_changeset(t(), map(), Keyword.t()) :: Ecto.Changeset.t()
   def email_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email])
@@ -114,6 +133,7 @@ defmodule DashFloat.Identity.User do
       validations on a LiveView form), this option can be set to `false`.
       Defaults to `true`.
   """
+  @spec password_changeset(t(), map(), Keyword.t()) :: Ecto.Changeset.t()
   def password_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:password])
@@ -124,9 +144,10 @@ defmodule DashFloat.Identity.User do
   @doc """
   Confirms the account by setting `confirmed_at`.
   """
+  @spec confirm_changeset(t() | Ecto.Changeset.t()) :: Ecto.Changeset.t()
   def confirm_changeset(user) do
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-    change(user, confirmed_at: now)
+    now = NaiveDateTime.utc_now()
+    change(user, confirmed_at: NaiveDateTime.truncate(now, :second))
   end
 
   @doc """
@@ -135,12 +156,13 @@ defmodule DashFloat.Identity.User do
   If there is no user or the user doesn't have a password, we call
   `Bcrypt.no_user_verify/0` to avoid timing attacks.
   """
-  def valid_password?(%DashFloat.Identity.User{hashed_password: hashed_password}, password)
+  @spec valid_password?(t(), String.t()) :: boolean()
+  def valid_password?(%User{hashed_password: hashed_password}, password)
       when is_binary(hashed_password) and byte_size(password) > 0 do
     Bcrypt.verify_pass(password, hashed_password)
   end
 
-  def valid_password?(_, _) do
+  def valid_password?(_user, _password) do
     Bcrypt.no_user_verify()
     false
   end
@@ -148,6 +170,7 @@ defmodule DashFloat.Identity.User do
   @doc """
   Validates the current password otherwise adds an error to the changeset.
   """
+  @spec validate_current_password(Ecto.Changeset.t(), String.t()) :: Ecto.Changeset.t()
   def validate_current_password(changeset, password) do
     if valid_password?(changeset.data, password) do
       changeset

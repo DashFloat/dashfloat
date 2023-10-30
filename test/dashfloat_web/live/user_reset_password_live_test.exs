@@ -1,16 +1,17 @@
 defmodule DashFloatWeb.UserResetPasswordLiveTest do
-  use DashFloatWeb.ConnCase
+  use DashFloatWeb.ConnCase, async: true
 
+  import DashFloat.Factories.IdentityFactory
   import Phoenix.LiveViewTest
-  import DashFloat.IdentityFixtures
 
   alias DashFloat.Identity
+  alias DashFloat.TestHelpers.IdentityHelper
 
   setup do
-    user = user_fixture()
+    user = insert(:user)
 
     token =
-      extract_user_token(fn url ->
+      IdentityHelper.extract_user_token(fn url ->
         Identity.deliver_user_reset_password_instructions(user, url)
       end)
 
@@ -40,10 +41,10 @@ defmodule DashFloatWeb.UserResetPasswordLiveTest do
         lv
         |> element("#reset_password_form")
         |> render_change(
-          user: %{"password" => "secret12", "password_confirmation" => "secret123456"}
+          user: %{"password" => "secret", "password_confirmation" => "secret123456"}
         )
 
-      assert result =~ "should be at least 12 character"
+      assert result =~ "should be at least 8 character"
       assert result =~ "does not match password"
     end
   end
@@ -75,14 +76,14 @@ defmodule DashFloatWeb.UserResetPasswordLiveTest do
         lv
         |> form("#reset_password_form",
           user: %{
-            "password" => "too short",
+            "password" => "short",
             "password_confirmation" => "does not match"
           }
         )
         |> render_submit()
 
       assert result =~ "Reset Password"
-      assert result =~ "should be at least 12 character(s)"
+      assert result =~ "should be at least 8 character(s)"
       assert result =~ "does not match password"
     end
   end

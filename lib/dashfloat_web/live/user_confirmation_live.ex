@@ -32,7 +32,7 @@ defmodule DashFloatWeb.UserConfirmationLive do
   # leaked token giving the user access to the account.
   def handle_event("confirm_account", %{"user" => %{"token" => token}}, socket) do
     case Identity.confirm_user(token) do
-      {:ok, _} ->
+      {:ok, _user} ->
         {:noreply,
          socket
          |> put_flash(:info, "User confirmed successfully.")
@@ -44,6 +44,7 @@ defmodule DashFloatWeb.UserConfirmationLive do
         # by some automation or by the user themselves, so we redirect without
         # a warning message.
         case socket.assigns do
+          # credo:disable-for-next-line Credo.Check.Refactor.NegatedIsNil
           %{current_user: %{confirmed_at: confirmed_at}} when not is_nil(confirmed_at) ->
             {:noreply, redirect(socket, to: ~p"/")}
 

@@ -46,7 +46,7 @@ defmodule DashFloatWeb.UserResetPasswordLive do
         %{user: user} ->
           Identity.change_user_password(user)
 
-        _ ->
+        _any ->
           %{}
       end
 

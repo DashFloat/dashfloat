@@ -45,7 +45,7 @@ defmodule DashFloatWeb.ConnCase do
   test context.
   """
   def register_and_log_in_user(%{conn: conn}) do
-    user = DashFloat.IdentityFixtures.user_fixture()
+    user = DashFloat.Factories.IdentityFactory.insert(:user)
     %{conn: log_in_user(conn, user), user: user}
   end
 
@@ -55,7 +55,7 @@ defmodule DashFloatWeb.ConnCase do
   It returns an updated `conn`.
   """
   def log_in_user(conn, user) do
-    token = DashFloat.Identity.generate_user_session_token(user)
+    {:ok, token} = DashFloat.Identity.generate_user_session_token(user)
 
     conn
     |> Phoenix.ConnTest.init_test_session(%{})

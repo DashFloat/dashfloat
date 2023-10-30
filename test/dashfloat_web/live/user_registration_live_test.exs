@@ -1,8 +1,10 @@
 defmodule DashFloatWeb.UserRegistrationLiveTest do
-  use DashFloatWeb.ConnCase
+  use DashFloatWeb.ConnCase, async: true
 
+  import DashFloat.Factories.IdentityFactory
   import Phoenix.LiveViewTest
-  import DashFloat.IdentityFixtures
+
+  alias DashFloat.TestHelpers.DataHelper
 
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do
@@ -15,7 +17,7 @@ defmodule DashFloatWeb.UserRegistrationLiveTest do
     test "redirects if already logged in", %{conn: conn} do
       result =
         conn
-        |> log_in_user(user_fixture())
+        |> log_in_user(insert(:user))
         |> live(~p"/users/register")
         |> follow_redirect(conn, "/")
 
@@ -28,11 +30,11 @@ defmodule DashFloatWeb.UserRegistrationLiveTest do
       result =
         lv
         |> element("#registration_form")
-        |> render_change(user: %{"email" => "with spaces", "password" => "too short"})
+        |> render_change(user: %{"email" => "with spaces", "password" => "short"})
 
       assert result =~ "Register"
       assert result =~ "must have the @ sign and no spaces"
-      assert result =~ "should be at least 12 character"
+      assert result =~ "should be at least 8 character"
     end
   end
 
@@ -40,8 +42,14 @@ defmodule DashFloatWeb.UserRegistrationLiveTest do
     test "creates account and logs the user in", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
-      email = unique_user_email()
-      form = form(lv, "#registration_form", user: valid_user_attributes(email: email))
+      email = DataHelper.email()
+
+      attrs = %{
+        email: email,
+        password: DataHelper.password()
+      }
+
+      form = form(lv, "#registration_form", user: attrs)
       render_submit(form)
       conn = follow_trigger_action(form, conn)
 
@@ -58,7 +66,7 @@ defmodule DashFloatWeb.UserRegistrationLiveTest do
     test "renders errors for duplicated email", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
-      user = user_fixture(%{email: "test@email.com"})
+      user = insert(:user, email: "test@email.com")
 
       result =
         lv
