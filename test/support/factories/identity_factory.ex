@@ -5,7 +5,9 @@ defmodule DashFloat.Factories.IdentityFactory do
 
   use ExMachina.Ecto, repo: DashFloat.Repo
 
+  alias DashFloat.Identity.Constants
   alias DashFloat.Identity.Schemas.User
+  alias DashFloat.Identity.Schemas.UserToken
   alias DashFloat.TestHelpers.DataHelper
 
   def user_factory do
@@ -22,5 +24,19 @@ defmodule DashFloat.Factories.IdentityFactory do
         confirmed_at: NaiveDateTime.utc_now()
       }
     )
+  end
+
+  def email_token_factory(attrs) do
+    token = Map.get(attrs, :token, :crypto.strong_rand_bytes(Constants.rand_size()))
+    hashed_token = :crypto.hash(Constants.hash_algorithm(), token)
+
+    %UserToken{token: hashed_token}
+  end
+
+  def session_token_factory do
+    %UserToken{
+      token: :crypto.strong_rand_bytes(Constants.rand_size()),
+      context: "session"
+    }
   end
 end

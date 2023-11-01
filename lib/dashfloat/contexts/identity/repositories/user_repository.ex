@@ -155,6 +155,12 @@ defmodule DashFloat.Identity.Repositories.UserRepository do
     end
   end
 
+  defp do_update_email(user, email, context) do
+    user
+    |> user_email_multi(email, context)
+    |> Repo.transaction()
+  end
+
   defp user_email_multi(user, email, context) do
     changeset =
       user
@@ -167,12 +173,6 @@ defmodule DashFloat.Identity.Repositories.UserRepository do
       :tokens,
       UserTokenQueryHelper.user_and_contexts_query(user, [context])
     )
-  end
-
-  defp do_update_email(user, email, context) do
-    user
-    |> user_email_multi(email, context)
-    |> Repo.transaction()
   end
 
   @doc """
@@ -236,6 +236,12 @@ defmodule DashFloat.Identity.Repositories.UserRepository do
     end
   end
 
+  defp do_confirm(user) do
+    user
+    |> confirm_multi()
+    |> Repo.transaction()
+  end
+
   defp confirm_multi(user) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, User.confirm_changeset(user))
@@ -243,12 +249,6 @@ defmodule DashFloat.Identity.Repositories.UserRepository do
       :tokens,
       UserTokenQueryHelper.user_and_contexts_query(user, ["confirm"])
     )
-  end
-
-  defp do_confirm(user) do
-    user
-    |> confirm_multi()
-    |> Repo.transaction()
   end
 
   @doc """
