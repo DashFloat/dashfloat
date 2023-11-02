@@ -9,6 +9,101 @@ defmodule DashFloat.Identity.Repositories.UserRepository do
   alias DashFloat.Repo
 
   @doc """
+  Emulates that the email will change without actually changing
+  it in the database.
+
+  ## Examples
+
+      iex> apply_email(user, "valid password", %{email: ...})
+      {:ok, %User{}}
+
+      iex> apply_email(user, "invalid password", %{email: ...})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec apply_email(User.t(), String.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  def apply_email(user, password, attrs) do
+    user
+    |> User.email_changeset(attrs)
+    |> User.validate_current_password(password)
+    |> Ecto.Changeset.apply_action(:update)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user email.
+
+  ## Examples
+
+      iex> change_email(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  @spec change_email(User.t(), map()) :: Ecto.Changeset.t()
+  def change_email(user, attrs \\ %{}) do
+    User.email_changeset(user, attrs, validate_email: false)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user password.
+
+  ## Examples
+
+      iex> change_password(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  @spec change_password(User.t(), map()) :: Ecto.Changeset.t()
+  def change_password(user, attrs \\ %{}) do
+    User.password_changeset(user, attrs, hash_password: false)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking user changes.
+
+  ## Examples
+
+      iex> change_registration(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  @spec change_registration(User.t(), map()) :: Ecto.Changeset.t()
+  def change_registration(user, attrs \\ %{}) do
+    User.registration_changeset(user, attrs, hash_password: false, validate_email: false)
+  end
+
+  @doc """
+  Confirms a user by the given token.
+
+  If the token matches, the user account is marked as confirmed
+  and the token is deleted.
+  """
+  @spec confirm(binary()) :: {:ok, User.t()} | :error
+  def confirm(token) do
+    with {:ok, query} <- UserTokenQueryHelper.verify_email_token_query(token, "confirm"),
+         %User{} = user <- Repo.one(query),
+         {:ok, %{user: user}} <- do_confirm(user) do
+      {:ok, user}
+    else
+      _any -> :error
+    end
+  end
+
+  defp do_confirm(user) do
+    user
+    |> confirm_multi()
+    |> Repo.transaction()
+  end
+
+  defp confirm_multi(user) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, User.confirm_changeset(user))
+    |> Ecto.Multi.delete_all(
+      :tokens,
+      UserTokenQueryHelper.user_and_contexts_query(user, ["confirm"])
+    )
+  end
+
+  @doc """
   Gets a single User.
 
   ## Examples
@@ -41,15 +136,6 @@ defmodule DashFloat.Identity.Repositories.UserRepository do
   end
 
   @doc """
-  Gets a User by the given signed token.
-  """
-  @spec get_by_session_token(binary()) :: User.t() | nil
-  def get_by_session_token(token) do
-    {:ok, query} = UserTokenQueryHelper.verify_session_token_query(token)
-    Repo.one(query)
-  end
-
-  @doc """
   Gets a User by email and password.
 
   ## Examples
@@ -66,6 +152,37 @@ defmodule DashFloat.Identity.Repositories.UserRepository do
       when is_binary(email) and is_binary(password) do
     user = get_by_email(email)
     if User.valid_password?(user, password), do: user
+  end
+
+  @doc """
+  Gets the user by reset password token.
+
+  ## Examples
+
+      iex> get_by_reset_password_token("validtoken")
+      %User{}
+
+      iex> get_by_reset_password_token("invalidtoken")
+      nil
+
+  """
+  @spec get_by_reset_password_token(binary()) :: User.t() | nil
+  def get_by_reset_password_token(token) do
+    with {:ok, query} <- UserTokenQueryHelper.verify_email_token_query(token, "reset_password"),
+         %User{} = user <- Repo.one(query) do
+      user
+    else
+      _any -> nil
+    end
+  end
+
+  @doc """
+  Gets a User by the given signed token.
+  """
+  @spec get_by_session_token(binary()) :: User.t() | nil
+  def get_by_session_token(token) do
+    {:ok, query} = UserTokenQueryHelper.verify_session_token_query(token)
+    Repo.one(query)
   end
 
   @doc """
@@ -88,52 +205,27 @@ defmodule DashFloat.Identity.Repositories.UserRepository do
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking user changes.
+  Resets the user password.
 
   ## Examples
 
-      iex> change_registration(user)
-      %Ecto.Changeset{data: %User{}}
-
-  """
-  @spec change_registration(User.t(), map()) :: Ecto.Changeset.t()
-  def change_registration(user, attrs \\ %{}) do
-    User.registration_changeset(user, attrs, hash_password: false, validate_email: false)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for changing the user email.
-
-  ## Examples
-
-      iex> change_email(user)
-      %Ecto.Changeset{data: %User{}}
-
-  """
-  @spec change_email(User.t(), map()) :: Ecto.Changeset.t()
-  def change_email(user, attrs \\ %{}) do
-    User.email_changeset(user, attrs, validate_email: false)
-  end
-
-  @doc """
-  Emulates that the email will change without actually changing
-  it in the database.
-
-  ## Examples
-
-      iex> apply_email(user, "valid password", %{email: ...})
+      iex> reset_password(user, %{password: "new long password", password_confirmation: "new long password"})
       {:ok, %User{}}
 
-      iex> apply_email(user, "invalid password", %{email: ...})
+      iex> reset_password(user, %{password: "valid", password_confirmation: "not the same"})
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec apply_email(User.t(), String.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
-  def apply_email(user, password, attrs) do
-    user
-    |> User.email_changeset(attrs)
-    |> User.validate_current_password(password)
-    |> Ecto.Changeset.apply_action(:update)
+  @spec reset_password(User.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  def reset_password(user, attrs) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, User.password_changeset(user, attrs))
+    |> Ecto.Multi.delete_all(:tokens, UserTokenQueryHelper.user_and_contexts_query(user, :all))
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _changes_so_far} -> {:error, changeset}
+    end
   end
 
   @doc """
@@ -176,20 +268,6 @@ defmodule DashFloat.Identity.Repositories.UserRepository do
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for changing the user password.
-
-  ## Examples
-
-      iex> change_password(user)
-      %Ecto.Changeset{data: %User{}}
-
-  """
-  @spec change_password(User.t(), map()) :: Ecto.Changeset.t()
-  def change_password(user, attrs \\ %{}) do
-    User.password_changeset(user, attrs, hash_password: false)
-  end
-
-  @doc """
   Updates the user password.
 
   ## Examples
@@ -211,84 +289,6 @@ defmodule DashFloat.Identity.Repositories.UserRepository do
 
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
-    |> Ecto.Multi.delete_all(:tokens, UserTokenQueryHelper.user_and_contexts_query(user, :all))
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{user: user}} -> {:ok, user}
-      {:error, :user, changeset, _changes_so_far} -> {:error, changeset}
-    end
-  end
-
-  @doc """
-  Confirms a user by the given token.
-
-  If the token matches, the user account is marked as confirmed
-  and the token is deleted.
-  """
-  @spec confirm(binary()) :: {:ok, User.t()} | :error
-  def confirm(token) do
-    with {:ok, query} <- UserTokenQueryHelper.verify_email_token_query(token, "confirm"),
-         %User{} = user <- Repo.one(query),
-         {:ok, %{user: user}} <- do_confirm(user) do
-      {:ok, user}
-    else
-      _any -> :error
-    end
-  end
-
-  defp do_confirm(user) do
-    user
-    |> confirm_multi()
-    |> Repo.transaction()
-  end
-
-  defp confirm_multi(user) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, User.confirm_changeset(user))
-    |> Ecto.Multi.delete_all(
-      :tokens,
-      UserTokenQueryHelper.user_and_contexts_query(user, ["confirm"])
-    )
-  end
-
-  @doc """
-  Gets the user by reset password token.
-
-  ## Examples
-
-      iex> get_by_reset_password_token("validtoken")
-      %User{}
-
-      iex> get_by_reset_password_token("invalidtoken")
-      nil
-
-  """
-  @spec get_by_reset_password_token(binary()) :: User.t() | nil
-  def get_by_reset_password_token(token) do
-    with {:ok, query} <- UserTokenQueryHelper.verify_email_token_query(token, "reset_password"),
-         %User{} = user <- Repo.one(query) do
-      user
-    else
-      _any -> nil
-    end
-  end
-
-  @doc """
-  Resets the user password.
-
-  ## Examples
-
-      iex> reset_password(user, %{password: "new long password", password_confirmation: "new long password"})
-      {:ok, %User{}}
-
-      iex> reset_password(user, %{password: "valid", password_confirmation: "not the same"})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  @spec reset_password(User.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
-  def reset_password(user, attrs) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, User.password_changeset(user, attrs))
     |> Ecto.Multi.delete_all(:tokens, UserTokenQueryHelper.user_and_contexts_query(user, :all))
     |> Repo.transaction()
     |> case do
