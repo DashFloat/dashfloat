@@ -30,7 +30,7 @@ defmodule DashFloat.Identity.Services.DeliverUserUpdateEmailInstructions do
       # coveralls-ignore-start
       _any ->
         {:error, :email_sending_failed}
-      # coveralls-ignore-stop
+        # coveralls-ignore-stop
     end
   end
 end
