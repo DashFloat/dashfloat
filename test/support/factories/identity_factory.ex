@@ -30,7 +30,11 @@ defmodule DashFloat.Factories.IdentityFactory do
     token = Map.get(attrs, :token, :crypto.strong_rand_bytes(Constants.rand_size()))
     hashed_token = :crypto.hash(Constants.hash_algorithm(), token)
 
-    %UserToken{token: hashed_token}
+    attrs = Map.put(attrs, :token, hashed_token)
+
+    %UserToken{}
+    |> merge_attributes(attrs)
+    |> evaluate_lazy_attributes()
   end
 
   def session_token_factory do
