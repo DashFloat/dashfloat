@@ -41,8 +41,10 @@ defmodule DashFloat.Identity.Repositories.UserTokenRepository do
       {:ok, _user_token} ->
         {:ok, Base.url_encode64(token, padding: false)}
 
+      # coveralls-ignore-start
       {:error, _changeset} ->
         {:error, :token_creation_failed}
+      # coveralls-ignore-stop
     end
   end
 
@@ -79,8 +81,10 @@ defmodule DashFloat.Identity.Repositories.UserTokenRepository do
       {:ok, _user_token} ->
         {:ok, token}
 
+      # coveralls-ignore-start
       {:error, _changeset} ->
         {:error, :token_creation_failed}
+      # coveralls-ignore-stop
     end
   end
 

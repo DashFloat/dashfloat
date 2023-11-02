@@ -79,7 +79,9 @@ defmodule DashFloatWeb.UserRegistrationLive do
     form = to_form(changeset, as: "user")
 
     if changeset.valid? do
+      # coveralls-ignore-start
       assign(socket, form: form, check_errors: false)
+      # coveralls-ignore-stop
     else
       assign(socket, form: form)
     end

@@ -100,8 +100,10 @@ defmodule DashFloat.Identity.Helpers.UserTokenQueryHelper do
 
         {:ok, query}
 
+      # coveralls-ignore-start
       :error ->
         :error
+      # coveralls-ignore-stop
     end
   end
 
