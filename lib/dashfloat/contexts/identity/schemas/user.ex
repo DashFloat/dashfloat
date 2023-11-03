@@ -14,18 +14,18 @@ defmodule DashFloat.Identity.Schemas.User do
           email: String.t() | nil,
           password: String.t() | nil,
           hashed_password: String.t() | nil,
-          confirmed_at: NaiveDateTime.t() | nil,
-          inserted_at: NaiveDateTime.t() | nil,
-          updated_at: NaiveDateTime.t() | nil
+          confirmed_at: DateTime.t() | nil,
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
         }
 
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
-    field :confirmed_at, :naive_datetime
+    field :confirmed_at, :utc_datetime_usec
 
-    timestamps()
+    timestamps(type: :utc_datetime_usec)
   end
 
   @doc """
@@ -146,8 +146,7 @@ defmodule DashFloat.Identity.Schemas.User do
   """
   @spec confirm_changeset(t() | Ecto.Changeset.t()) :: Ecto.Changeset.t()
   def confirm_changeset(user) do
-    now = NaiveDateTime.utc_now()
-    change(user, confirmed_at: NaiveDateTime.truncate(now, :second))
+    change(user, confirmed_at: DateTime.utc_now())
   end
 
   @doc """

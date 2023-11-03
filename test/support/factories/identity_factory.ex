@@ -21,7 +21,7 @@ defmodule DashFloat.Factories.IdentityFactory do
     struct!(
       user_factory(),
       %{
-        confirmed_at: NaiveDateTime.utc_now()
+        confirmed_at: DateTime.utc_now()
       }
     )
   end
