@@ -21,7 +21,7 @@ defmodule DashFloat.Identity.Schemas.UserToken do
           context: String.t() | nil,
           sent_to: String.t() | nil,
           user_id: integer() | nil,
-          inserted_at: NaiveDateTime.t() | nil
+          inserted_at: DateTime.t() | nil
         }
 
   schema "users_tokens" do
@@ -30,7 +30,7 @@ defmodule DashFloat.Identity.Schemas.UserToken do
     field :sent_to, :string
     belongs_to :user, User
 
-    timestamps(updated_at: false)
+    timestamps(type: :utc_datetime_usec, updated_at: false)
   end
 
   @doc false

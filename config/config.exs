@@ -10,7 +10,9 @@ import Config
 config :dashfloat,
   namespace: DashFloat,
   ecto_repos: [DashFloat.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime_usec]
+
+config :dashfloat, DashFloat.Repo, migration_timestamps: [type: :timestamptz]
 
 # Configures the endpoint
 config :dashfloat, DashFloatWeb.Endpoint,
