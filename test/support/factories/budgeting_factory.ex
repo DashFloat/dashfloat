@@ -6,11 +6,18 @@ defmodule DashFloat.Factories.BudgetingFactory do
   use ExMachina.Ecto, repo: DashFloat.Repo
 
   alias DashFloat.Budgeting.Schemas.Book
+  alias DashFloat.Budgeting.Schemas.BookUser
   alias DashFloat.Budgeting.Schemas.User
 
   def book_factory do
     %Book{
       name: Faker.Food.dish()
+    }
+  end
+
+  def book_user_factory do
+    %BookUser{
+      role: :viewer
     }
   end
 

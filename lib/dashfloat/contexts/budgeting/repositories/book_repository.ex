@@ -4,6 +4,7 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
   """
   import Ecto.Query, warn: false
 
+  alias DashFloat.Budgeting.Policies.BookPolicy
   alias DashFloat.Budgeting.Schemas.Book
   alias DashFloat.Repo
 
@@ -68,21 +69,29 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
   end
 
   @doc """
-  Updates a `Book`.
+  Updates a `Book` associated with the given `user_id`.
+
+  Returns an error if the role is unauthorized or if there
+  is no association between the `Book` and `User`.
 
   ## Examples
 
-      iex> update(book, %{field: new_value})
+      iex> update(book, %{field: new_value}, user_id)
       {:ok, %Book{}}
 
-      iex> update(book, %{field: bad_value})
+      iex> update(book, %{field: bad_value}, user_id)
       {:error, %Ecto.Changeset{}}
 
+      iex> update(book, %{field: new_value}, unauthorized_user_id)
+      {:error, :unauthorized}
+
   """
-  @spec update(Book.t(), map()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()}
-  def update(book, attrs) do
-    book
-    |> Book.changeset(attrs)
-    |> Repo.update()
+  @spec update(Book.t(), map(), integer()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()}
+  def update(book, attrs, user_id) do
+    with :ok <- BookPolicy.authorize(:book_update, user_id, book) do
+      book
+      |> Book.changeset(attrs)
+      |> Repo.update()
+    end
   end
 end

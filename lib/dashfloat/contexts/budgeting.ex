@@ -36,9 +36,9 @@ defmodule DashFloat.Budgeting do
       {:error, :user_not_found}
 
   """
-  @spec create_book(integer(), map()) ::
+  @spec create_book(map(), integer()) ::
           {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :user_not_found}
-  defdelegate create_book(user_id, attrs \\ %{}), to: CreateBook, as: :call
+  defdelegate create_book(attrs, user_id), to: CreateBook, as: :call
 
   @doc """
   Deletes a `Book`.
@@ -87,13 +87,13 @@ defmodule DashFloat.Budgeting do
 
   ## Examples
 
-      iex> update_book(book, %{field: new_value})
+      iex> update_book(book, %{field: new_value}, user_id)
       {:ok, %Book{}}
 
-      iex> update_book(book, %{field: bad_value})
+      iex> update_book(book, %{field: bad_value}, user_id)
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec update_book(Book.t(), map()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate update_book(book, attrs), to: BookRepository, as: :update
+  @spec update_book(Book.t(), map(), integer()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate update_book(book, attrs, user_id), to: BookRepository, as: :update
 end

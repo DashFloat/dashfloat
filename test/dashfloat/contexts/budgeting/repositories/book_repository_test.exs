@@ -39,20 +39,54 @@ defmodule DashFloat.Budgeting.Repositories.BookRepositoryTest do
   end
 
   describe "update/2" do
-    test "with valid data updates the book" do
+    setup do
       book = insert(:book)
+      user = insert(:user)
+
+      %{book: book, user: user}
+    end
+
+    test "with admin book_user and valid data updates the book", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :admin)
+
       attrs = %{name: "Test Book Updated"}
 
-      assert {:ok, %Book{} = book} = BookRepository.update(book, attrs)
+      assert {:ok, %Book{} = book} = BookRepository.update(book, attrs, user.id)
       assert book.name == "Test Book Updated"
     end
 
-    test "with invalid data returns error changeset" do
-      book = insert(:book)
+    test "with admin book_user and invalid data returns error changeset", %{
+      book: book,
+      user: user
+    } do
+      insert(:book_user, book: book, user: user, role: :admin)
+
       attrs = %{name: nil}
 
-      assert {:error, %Ecto.Changeset{}} = BookRepository.update(book, attrs)
+      assert {:error, %Ecto.Changeset{}} = BookRepository.update(book, attrs, user.id)
       assert book == BookRepository.get(book.id)
+    end
+
+    test "with editor book_user and valid data returns error", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :editor)
+
+      attrs = %{name: "Test Book Updated"}
+
+      assert BookRepository.update(book, attrs, user.id) == {:error, :unauthorized}
+    end
+
+    test "with viewer book_user and valid data returns error", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :editor)
+
+      attrs = %{name: "Test Book Updated"}
+
+      assert BookRepository.update(book, attrs, user.id) == {:error, :unauthorized}
+    end
+
+    test "with unassociated book/user and valid data returns error", %{book: book, user: user} do
+      attrs = %{name: "Test Book Updated"}
+
+      assert BookRepository.update(book, attrs, user.id) == {:error, :unauthorized}
     end
   end
 end

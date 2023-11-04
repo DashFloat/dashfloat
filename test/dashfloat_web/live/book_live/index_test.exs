@@ -12,7 +12,7 @@ defmodule DashFloatWeb.BookLive.IndexTest do
     user = insert(:user)
     book = insert(:book)
 
-    {:ok, conn: log_in_user(conn, user), book: book}
+    {:ok, conn: log_in_user(conn, user), book: book, user: user}
   end
 
   describe "list" do
@@ -61,7 +61,13 @@ defmodule DashFloatWeb.BookLive.IndexTest do
   end
 
   describe "update" do
-    test "with valid data updates book in listing", %{conn: conn, book: book} do
+    test "with admin book_user and valid data updates book in listing", %{
+      conn: conn,
+      book: book,
+      user: user
+    } do
+      insert(:book_user, book: book, user: user, role: :admin)
+
       {:ok, index_live, _html} = live(conn, ~p"/books")
 
       assert index_live |> element("#books-#{book.id} a", "Edit") |> render_click() =~
@@ -80,7 +86,13 @@ defmodule DashFloatWeb.BookLive.IndexTest do
       assert html =~ "Test Book Updated"
     end
 
-    test "with invalid data returns error", %{conn: conn, book: book} do
+    test "with admin book_user and invalid data returns error", %{
+      conn: conn,
+      book: book,
+      user: user
+    } do
+      insert(:book_user, book: book, user: user, role: :admin)
+
       {:ok, index_live, _html} = live(conn, ~p"/books")
 
       assert index_live |> element("#books-#{book.id} a", "Edit") |> render_click() =~

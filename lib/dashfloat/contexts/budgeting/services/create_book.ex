@@ -4,13 +4,13 @@ defmodule DashFloat.Budgeting.Services.CreateBook do
 
   ## Examples
 
-      iex> CreateBook.call(123, %{field: value})
+      iex> CreateBook.call(%{field: value}, 123)
       {:ok, %Book{}}
 
-      iex> CreateBook.call(123, %{field: bad_value})
+      iex> CreateBook.call(%{field: bad_value}, 123)
       {:error, %Ecto.Changeset{}}
 
-      iex> CreateBook.call(456, %{field: value})
+      iex> CreateBook.call(%{field: value}, 456)
       {:error, :user_not_found}
 
   """
@@ -21,9 +21,9 @@ defmodule DashFloat.Budgeting.Services.CreateBook do
   alias DashFloat.Repo
   alias Ecto.Multi
 
-  @spec call(integer(), map()) ::
+  @spec call(map(), integer()) ::
           {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :user_not_found}
-  def call(user_id, attrs) do
+  def call(attrs, user_id) do
     Multi.new()
     |> Multi.run(:user, fn _repo, _changes_so_far ->
       case UserRepository.get(user_id) do
