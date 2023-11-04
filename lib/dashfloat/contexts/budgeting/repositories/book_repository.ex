@@ -41,19 +41,29 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
   end
 
   @doc """
-  Gets a single `Book`.
+  Gets a single `Book` associated with the given `user_id`.
+
+  Returns `nil` if the `Book` doesn't exist or if the `User`
+  is not associated with the `Book`.
 
   ## Examples
 
-      iex> get(123)
+      iex> get(123, 123)
       %Book{}
 
-      iex> get(456)
+      iex> get(456, 123)
       nil
 
   """
-  @spec get(integer()) :: Book.t() | nil
-  def get(id), do: Repo.get(Book, id)
+  @spec get(integer(), integer()) :: Book.t() | nil
+  def get(id, user_id) do
+    BookUser
+    |> join(:inner, [book_user], book in assoc(book_user, :book))
+    |> where([book_user, _book], book_user.user_id == ^user_id)
+    |> where([_book_user, book], book.id == ^id)
+    |> select([_book_user, book], book)
+    |> Repo.one()
+  end
 
   @doc """
   Returns all `Book` records associated with the given `user_id`.

@@ -56,19 +56,22 @@ defmodule DashFloat.Budgeting do
   defdelegate delete_book(book), to: BookRepository, as: :delete
 
   @doc """
-  Gets a single `Book`.
+  Gets a single `Book` associated with the given `user_id`.
+
+  Returns `nil` if the `Book` doesn't exist or if the `User`
+  is not associated with the `Book`.
 
   ## Examples
 
-      iex> get_book(123)
+      iex> get_book(123, 123)
       %Book{}
 
-      iex> get_book(456)
+      iex> get_book(456, 123)
       nil
 
   """
-  @spec get_book(integer()) :: Book.t() | nil
-  defdelegate get_book(id), to: BookRepository, as: :get
+  @spec get_book(integer(), integer()) :: Book.t() | nil
+  defdelegate get_book(id, user_id), to: BookRepository, as: :get
 
   @doc """
   Returns all `Book` records associated with the given `user_id`.
@@ -100,7 +103,6 @@ defmodule DashFloat.Budgeting do
       {:error, :unauthorized}
 
   """
-  @spec update_book(Book.t(), map(), integer()) ::
-          {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :unauthorized}
+  @spec update_book(Book.t(), map(), integer()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :unauthorized}
   defdelegate update_book(book, attrs, user_id), to: BookRepository, as: :update
 end

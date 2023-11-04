@@ -14,19 +14,53 @@ defmodule DashFloat.Budgeting.Repositories.BookRepositoryTest do
   end
 
   describe "delete/1" do
-    test "deletes the book" do
+    setup do
       book = insert(:book)
+      user = insert(:user)
+
+      %{book: book, user: user}
+    end
+
+    test "deletes the book", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :admin)
 
       assert {:ok, %Book{}} = BookRepository.delete(book)
-      assert BookRepository.get(book.id) == nil
+      assert BookRepository.get(book.id, user.id) == nil
     end
   end
 
   describe "get/1" do
-    test "returns the book with given id" do
+    setup do
       book = insert(:book)
+      user = insert(:user)
 
-      assert BookRepository.get(book.id) == book
+      %{book: book, user: user}
+    end
+
+    test "with associated admin and valid id returns a book", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :admin)
+
+      assert BookRepository.get(book.id, user.id) == book
+    end
+
+    test "with associated editor and valid id returns a book", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :editor)
+
+      assert BookRepository.get(book.id, user.id) == book
+    end
+
+    test "with associated viewer and valid id returns a book", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :viewer)
+
+      assert BookRepository.get(book.id, user.id) == book
+    end
+
+    test "with unassociated book_user and valid id returns nil", %{book: book, user: user} do
+      assert BookRepository.get(book.id, user.id) == nil
+    end
+
+    test "with existing book_user and non-existing id returns nil", %{user: user} do
+      assert BookRepository.get(-1, user.id) == nil
     end
   end
 
@@ -103,7 +137,7 @@ defmodule DashFloat.Budgeting.Repositories.BookRepositoryTest do
       attrs = %{name: nil}
 
       assert {:error, %Ecto.Changeset{}} = BookRepository.update(book, attrs, user.id)
-      assert book == BookRepository.get(book.id)
+      assert book == BookRepository.get(book.id, user.id)
     end
 
     test "with unassociated user and valid data returns error", %{book: book, user: user} do

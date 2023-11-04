@@ -58,7 +58,7 @@ defmodule DashFloatWeb.BookLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Book")
-    |> assign(:book, Budgeting.get_book(id))
+    |> assign(:book, Budgeting.get_book(id, socket.assigns.current_user.id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -80,7 +80,7 @@ defmodule DashFloatWeb.BookLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    book = Budgeting.get_book(id)
+    book = Budgeting.get_book(id, socket.assigns.current_user.id)
     {:ok, _} = Budgeting.delete_book(book)
 
     {:noreply, stream_delete(socket, :books, book)}
