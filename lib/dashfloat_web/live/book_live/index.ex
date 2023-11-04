@@ -47,7 +47,7 @@ defmodule DashFloatWeb.BookLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :books, Budgeting.list_books())}
+    {:ok, stream(socket, :books, Budgeting.list_books(socket.assigns.current_user.id))}
   end
 
   @impl true

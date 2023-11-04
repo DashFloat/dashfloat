@@ -10,12 +10,18 @@ defmodule DashFloatWeb.BookLive.IndexTest do
 
   setup %{conn: conn} do
     user = insert(:user)
-    book = insert(:book)
 
-    {:ok, conn: log_in_user(conn, user), book: book, user: user}
+    {:ok, conn: log_in_user(conn, user), user: user}
   end
 
   describe "list" do
+    setup %{user: user} do
+      book = insert(:book)
+      insert(:book_user, book: book, user: user, role: :admin)
+
+      {:ok, book: book}
+    end
+
     test "returns all books", %{conn: conn, book: book} do
       {:ok, _index_live, html} = live(conn, ~p"/books")
 
@@ -61,6 +67,12 @@ defmodule DashFloatWeb.BookLive.IndexTest do
   end
 
   describe "update" do
+    setup do
+      book = insert(:book)
+
+      {:ok, book: book}
+    end
+
     test "with admin book_user and valid data updates book in listing", %{
       conn: conn,
       book: book,
@@ -111,6 +123,13 @@ defmodule DashFloatWeb.BookLive.IndexTest do
   end
 
   describe "delete" do
+    setup %{user: user} do
+      book = insert(:book)
+      insert(:book_user, book: book, user: user, role: :admin)
+
+      {:ok, book: book}
+    end
+
     test "deletes book in listing", %{conn: conn, book: book} do
       {:ok, index_live, _html} = live(conn, ~p"/books")
 

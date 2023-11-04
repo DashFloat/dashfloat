@@ -71,19 +71,22 @@ defmodule DashFloat.Budgeting do
   defdelegate get_book(id), to: BookRepository, as: :get
 
   @doc """
-  Returns the list of Books.
+  Returns all `Book` records associated with the given `user_id`.
 
   ## Examples
 
-      iex> list_books()
+      iex> list_books(user_id)
       [%Book{}, ...]
 
   """
-  @spec list_books() :: [Book.t()]
-  defdelegate list_books, to: BookRepository, as: :list
+  @spec list_books(integer()) :: [Book.t()]
+  defdelegate list_books(user_id), to: BookRepository, as: :list
 
   @doc """
-  Updates a `Book`.
+  Updates a `Book` associated with the given `user_id`.
+
+  Returns an error if the role is unauthorized or if there
+  is no association between the `Book` and `User`.
 
   ## Examples
 
@@ -93,7 +96,10 @@ defmodule DashFloat.Budgeting do
       iex> update_book(book, %{field: bad_value}, user_id)
       {:error, %Ecto.Changeset{}}
 
+      iex> update_book(book, %{field: new_value}, unauthorized_user_id)
+      {:error, :unauthorized}
+
   """
-  @spec update_book(Book.t(), map(), integer()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()}
+  @spec update_book(Book.t(), map(), integer()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :unauthorized}
   defdelegate update_book(book, attrs, user_id), to: BookRepository, as: :update
 end

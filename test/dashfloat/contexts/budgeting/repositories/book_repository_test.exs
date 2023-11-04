@@ -30,11 +30,34 @@ defmodule DashFloat.Budgeting.Repositories.BookRepositoryTest do
     end
   end
 
-  describe "list/0" do
-    test "returns all books" do
+  describe "list/1" do
+    setup do
       book = insert(:book)
+      user = insert(:user)
 
-      assert BookRepository.list() == [book]
+      %{book: book, user: user}
+    end
+
+    test "with associated admin returns all books", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :admin)
+
+      assert BookRepository.list(user.id) == [book]
+    end
+
+    test "with associated editor returns all books", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :editor)
+
+      assert BookRepository.list(user.id) == [book]
+    end
+
+    test "with associated viewer returns all books", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :viewer)
+
+      assert BookRepository.list(user.id) == [book]
+    end
+
+    test "with unassociated book_user returns empty list", %{user: user} do
+      assert BookRepository.list(user.id) == []
     end
   end
 

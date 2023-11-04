@@ -6,6 +6,7 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
 
   alias DashFloat.Budgeting.Policies.BookPolicy
   alias DashFloat.Budgeting.Schemas.Book
+  alias DashFloat.Budgeting.Schemas.BookUser
   alias DashFloat.Repo
 
   @doc """
@@ -55,17 +56,21 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
   def get(id), do: Repo.get(Book, id)
 
   @doc """
-  Returns the list of Books.
+  Returns all `Book` records associated with the given `user_id`.
 
   ## Examples
 
-      iex> list()
+      iex> list(user_id)
       [%Book{}, ...]
 
   """
-  @spec list() :: [Book.t()]
-  def list do
-    Repo.all(Book)
+  @spec list(integer()) :: [Book.t()]
+  def list(user_id) do
+    BookUser
+    |> join(:inner, [book_user], book in assoc(book_user, :book))
+    |> where([book_user, _book], book_user.user_id == ^user_id)
+    |> select([_book_user, book], book)
+    |> Repo.all()
   end
 
   @doc """
@@ -86,7 +91,7 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
       {:error, :unauthorized}
 
   """
-  @spec update(Book.t(), map(), integer()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()}
+  @spec update(Book.t(), map(), integer()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :unauthorized}
   def update(book, attrs, user_id) do
     with :ok <- BookPolicy.authorize(:book_update, user_id, book) do
       book
