@@ -22,25 +22,6 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
   end
 
   @doc """
-  Creates a book.
-
-  ## Examples
-
-      iex> create(%{field: value})
-      {:ok, %Book{}}
-
-      iex> create(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  @spec create(map()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()}
-  def create(attrs \\ %{}) do
-    %Book{}
-    |> Book.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
   Deletes a book.
 
   ## Examples

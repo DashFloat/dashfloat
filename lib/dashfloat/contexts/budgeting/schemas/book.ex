@@ -7,7 +7,11 @@ defmodule DashFloat.Budgeting.Schemas.Book do
   """
 
   use Ecto.Schema
+
   import Ecto.Changeset
+
+  alias DashFloat.Budgeting.Schemas.BookUser
+  alias DashFloat.Budgeting.Schemas.User
 
   @type t :: %__MODULE__{
           __meta__: Ecto.Schema.Metadata.t(),
@@ -19,6 +23,8 @@ defmodule DashFloat.Budgeting.Schemas.Book do
 
   schema "books" do
     field :name, :string
+
+    many_to_many :users, User, join_through: BookUser
 
     timestamps(type: :utc_datetime_usec)
   end

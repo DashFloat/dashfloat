@@ -68,7 +68,7 @@ defmodule DashFloatWeb.BookLive.FormComponent do
   end
 
   defp save_book(socket, :new, book_params) do
-    case Budgeting.create_book(book_params) do
+    case Budgeting.create_book(socket.assigns.current_user_id, book_params) do
       {:ok, book} ->
         notify_parent({:saved, book})
 

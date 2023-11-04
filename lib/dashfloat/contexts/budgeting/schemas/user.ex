@@ -5,6 +5,9 @@ defmodule DashFloat.Budgeting.Schemas.User do
 
   use Ecto.Schema
 
+  alias DashFloat.Budgeting.Schemas.Book
+  alias DashFloat.Budgeting.Schemas.BookUser
+
   @type t :: %__MODULE__{
           __meta__: Ecto.Schema.Metadata.t(),
           id: integer() | nil,
@@ -19,6 +22,8 @@ defmodule DashFloat.Budgeting.Schemas.User do
 
     # Not actually needed, but is needed for creating test factories
     field :hashed_password, :string, redact: true
+
+    many_to_many :books, Book, join_through: BookUser
 
     timestamps(type: :utc_datetime_usec)
   end

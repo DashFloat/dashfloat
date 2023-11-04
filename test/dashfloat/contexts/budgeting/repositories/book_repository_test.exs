@@ -13,21 +13,6 @@ defmodule DashFloat.Budgeting.Repositories.BookRepositoryTest do
     end
   end
 
-  describe "create/1" do
-    test "with valid data creates a book" do
-      attrs = %{name: "Test Book"}
-
-      assert {:ok, %Book{} = book} = BookRepository.create(attrs)
-      assert book.name == "Test Book"
-    end
-
-    test "with invalid data returns error changeset" do
-      attrs = %{name: nil}
-
-      assert {:error, %Ecto.Changeset{}} = BookRepository.create(attrs)
-    end
-  end
-
   describe "delete/1" do
     test "deletes the book" do
       book = insert(:book)

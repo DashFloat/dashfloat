@@ -39,6 +39,7 @@ defmodule DashFloatWeb.BookLive.Index do
         action={@live_action}
         book={@book}
         patch={~p"/books"}
+        current_user_id={@current_user.id}
       />
     </.modal>
     """

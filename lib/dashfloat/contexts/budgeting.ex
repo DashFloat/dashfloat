@@ -7,6 +7,7 @@ defmodule DashFloat.Budgeting do
 
   alias DashFloat.Budgeting.Repositories.BookRepository
   alias DashFloat.Budgeting.Schemas.Book
+  alias DashFloat.Budgeting.Services.CreateBook
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking book changes.
@@ -21,19 +22,23 @@ defmodule DashFloat.Budgeting do
   defdelegate change_book(book, attrs \\ %{}), to: BookRepository, as: :change
 
   @doc """
-  Creates a book.
+  Creates a `Book` for the given `user_id` and assigns them as an admin.
 
   ## Examples
 
-      iex> create_book(%{field: value})
+      iex> create_book(123, %{field: value})
       {:ok, %Book{}}
 
-      iex> create_book(%{field: bad_value})
+      iex> create_book(123, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
+      iex> create_book(456, %{field: value})
+      {:error, :user_not_found}
+
   """
-  @spec create_book(map()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate create_book(attrs \\ %{}), to: BookRepository, as: :create
+  @spec create_book(integer(), map()) ::
+          {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :user_not_found}
+  defdelegate create_book(user_id, attrs \\ %{}), to: CreateBook, as: :call
 
   @doc """
   Deletes a book.
