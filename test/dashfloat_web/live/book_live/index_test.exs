@@ -22,7 +22,7 @@ defmodule DashFloatWeb.BookLive.IndexTest do
       {:ok, book: book}
     end
 
-    test "returns all books", %{conn: conn, book: book} do
+    test "returns all associated books", %{conn: conn, book: book} do
       {:ok, _index_live, html} = live(conn, ~p"/books")
 
       assert html =~ "Listing Books"
@@ -73,7 +73,7 @@ defmodule DashFloatWeb.BookLive.IndexTest do
       {:ok, book: book}
     end
 
-    test "with admin book_user and valid data updates book in listing", %{
+    test "with associated admin and valid data updates book in listing", %{
       conn: conn,
       book: book,
       user: user
@@ -98,7 +98,7 @@ defmodule DashFloatWeb.BookLive.IndexTest do
       assert html =~ "Test Book Updated"
     end
 
-    test "with admin book_user and invalid data returns error", %{
+    test "with associated admin and invalid data returns error", %{
       conn: conn,
       book: book,
       user: user

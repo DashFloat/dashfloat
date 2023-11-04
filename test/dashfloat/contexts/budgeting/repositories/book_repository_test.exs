@@ -69,7 +69,7 @@ defmodule DashFloat.Budgeting.Repositories.BookRepositoryTest do
       %{book: book, user: user}
     end
 
-    test "with admin book_user and valid data updates the book", %{book: book, user: user} do
+    test "with associated admin and valid data updates the book", %{book: book, user: user} do
       insert(:book_user, book: book, user: user, role: :admin)
 
       attrs = %{name: "Test Book Updated"}
@@ -78,7 +78,23 @@ defmodule DashFloat.Budgeting.Repositories.BookRepositoryTest do
       assert book.name == "Test Book Updated"
     end
 
-    test "with admin book_user and invalid data returns error changeset", %{
+    test "with associated editor and valid data returns error", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :editor)
+
+      attrs = %{name: "Test Book Updated"}
+
+      assert BookRepository.update(book, attrs, user.id) == {:error, :unauthorized}
+    end
+
+    test "with associated viewer and valid data returns error", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :viewer)
+
+      attrs = %{name: "Test Book Updated"}
+
+      assert BookRepository.update(book, attrs, user.id) == {:error, :unauthorized}
+    end
+
+    test "with associated book_user and invalid data returns error changeset", %{
       book: book,
       user: user
     } do
@@ -90,23 +106,7 @@ defmodule DashFloat.Budgeting.Repositories.BookRepositoryTest do
       assert book == BookRepository.get(book.id)
     end
 
-    test "with editor book_user and valid data returns error", %{book: book, user: user} do
-      insert(:book_user, book: book, user: user, role: :editor)
-
-      attrs = %{name: "Test Book Updated"}
-
-      assert BookRepository.update(book, attrs, user.id) == {:error, :unauthorized}
-    end
-
-    test "with viewer book_user and valid data returns error", %{book: book, user: user} do
-      insert(:book_user, book: book, user: user, role: :editor)
-
-      attrs = %{name: "Test Book Updated"}
-
-      assert BookRepository.update(book, attrs, user.id) == {:error, :unauthorized}
-    end
-
-    test "with unassociated book/user and valid data returns error", %{book: book, user: user} do
+    test "with unassociated user and valid data returns error", %{book: book, user: user} do
       attrs = %{name: "Test Book Updated"}
 
       assert BookRepository.update(book, attrs, user.id) == {:error, :unauthorized}

@@ -100,6 +100,7 @@ defmodule DashFloat.Budgeting do
       {:error, :unauthorized}
 
   """
-  @spec update_book(Book.t(), map(), integer()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :unauthorized}
+  @spec update_book(Book.t(), map(), integer()) ::
+          {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :unauthorized}
   defdelegate update_book(book, attrs, user_id), to: BookRepository, as: :update
 end

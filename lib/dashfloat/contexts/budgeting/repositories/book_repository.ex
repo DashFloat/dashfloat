@@ -91,7 +91,8 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
       {:error, :unauthorized}
 
   """
-  @spec update(Book.t(), map(), integer()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :unauthorized}
+  @spec update(Book.t(), map(), integer()) ::
+          {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :unauthorized}
   def update(book, attrs, user_id) do
     with :ok <- BookPolicy.authorize(:book_update, user_id, book) do
       book
