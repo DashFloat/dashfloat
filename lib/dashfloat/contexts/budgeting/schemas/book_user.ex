@@ -1,6 +1,6 @@
 defmodule DashFloat.Budgeting.Schemas.BookUser do
   @moduledoc """
-  BookUser represents the relationship between a Book and a User.
+  `BookUser` represents the relationship between a `Book` and a `User`.
   """
 
   use Ecto.Schema

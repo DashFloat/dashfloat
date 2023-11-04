@@ -1,6 +1,6 @@
 defmodule DashFloat.Budgeting.Schemas.Book do
   @moduledoc """
-  Books represent a user's budget.
+  `Book` represents a user's budget.
 
   This is where all transactions, categories, and everything
   that's related to budgeting is connected to.

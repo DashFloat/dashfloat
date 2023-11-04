@@ -1,6 +1,6 @@
 defmodule DashFloat.Budgeting.Schemas.User do
   @moduledoc """
-  User for the Budgeting context.
+  `User` for the `Budgeting` context.
   """
 
   use Ecto.Schema

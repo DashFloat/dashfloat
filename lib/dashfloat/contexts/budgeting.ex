@@ -41,7 +41,7 @@ defmodule DashFloat.Budgeting do
   defdelegate create_book(user_id, attrs \\ %{}), to: CreateBook, as: :call
 
   @doc """
-  Deletes a book.
+  Deletes a `Book`.
 
   ## Examples
 
@@ -56,7 +56,7 @@ defmodule DashFloat.Budgeting do
   defdelegate delete_book(book), to: BookRepository, as: :delete
 
   @doc """
-  Gets a single book.
+  Gets a single `Book`.
 
   ## Examples
 
@@ -71,7 +71,7 @@ defmodule DashFloat.Budgeting do
   defdelegate get_book(id), to: BookRepository, as: :get
 
   @doc """
-  Returns the list of books.
+  Returns the list of Books.
 
   ## Examples
 
@@ -83,7 +83,7 @@ defmodule DashFloat.Budgeting do
   defdelegate list_books, to: BookRepository, as: :list
 
   @doc """
-  Updates a book.
+  Updates a `Book`.
 
   ## Examples
 

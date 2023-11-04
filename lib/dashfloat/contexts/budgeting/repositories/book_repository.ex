@@ -1,6 +1,6 @@
 defmodule DashFloat.Budgeting.Repositories.BookRepository do
   @moduledoc """
-  Repository for the Book schema.
+  Repository for the `Book` schema.
   """
   import Ecto.Query, warn: false
 
@@ -8,7 +8,7 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
   alias DashFloat.Repo
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking book changes.
+  Returns an `%Ecto.Changeset{}` for tracking `Book` changes.
 
   ## Examples
 
@@ -22,7 +22,7 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
   end
 
   @doc """
-  Deletes a book.
+  Deletes a `Book`.
 
   ## Examples
 
@@ -39,7 +39,7 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
   end
 
   @doc """
-  Gets a single book.
+  Gets a single `Book`.
 
   ## Examples
 
@@ -54,7 +54,7 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
   def get(id), do: Repo.get(Book, id)
 
   @doc """
-  Returns the list of books.
+  Returns the list of Books.
 
   ## Examples
 
@@ -68,7 +68,7 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
   end
 
   @doc """
-  Updates a book.
+  Updates a `Book`.
 
   ## Examples
 
