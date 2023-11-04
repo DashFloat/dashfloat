@@ -81,7 +81,7 @@ defmodule DashFloatWeb.BookLive.Index do
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     book = Budgeting.get_book(id, socket.assigns.current_user.id)
-    {:ok, _} = Budgeting.delete_book(book)
+    {:ok, _} = Budgeting.delete_book(book, socket.assigns.current_user.id)
 
     {:noreply, stream_delete(socket, :books, book)}
   end

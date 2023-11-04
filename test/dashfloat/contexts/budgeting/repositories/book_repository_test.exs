@@ -21,11 +21,27 @@ defmodule DashFloat.Budgeting.Repositories.BookRepositoryTest do
       %{book: book, user: user}
     end
 
-    test "deletes the book", %{book: book, user: user} do
+    test "with associated admin deletes the book", %{book: book, user: user} do
       insert(:book_user, book: book, user: user, role: :admin)
 
-      assert {:ok, %Book{}} = BookRepository.delete(book)
+      assert {:ok, %Book{}} = BookRepository.delete(book, user.id)
       assert BookRepository.get(book.id, user.id) == nil
+    end
+
+    test "with associated editor returns error", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :editor)
+
+      assert BookRepository.delete(book, user.id) == {:error, :unauthorized}
+    end
+
+    test "with associated viewer returns error", %{book: book, user: user} do
+      insert(:book_user, book: book, user: user, role: :viewer)
+
+      assert BookRepository.delete(book, user.id) == {:error, :unauthorized}
+    end
+
+    test "with non-associated user returns error", %{book: book, user: user} do
+      assert BookRepository.delete(book, user.id) == {:error, :unauthorized}
     end
   end
 

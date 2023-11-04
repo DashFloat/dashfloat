@@ -24,20 +24,29 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
   end
 
   @doc """
-  Deletes a `Book`.
+  Deletes a `Book` associated with the given `user_id`.
+
+  Returns an error if the role is unauthorized or if there
+  is no association between the `Book` and `User`.
 
   ## Examples
 
-      iex> delete(book)
+      iex> delete(book, user_id)
       {:ok, %Book{}}
 
-      iex> delete(book)
+      iex> delete(book, user_id)
       {:error, %Ecto.Changeset{}}
 
+      iex> delete(book, unauthorized_user_id)
+      {:error, :unauthorized}
+
   """
-  @spec delete(Book.t()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()}
-  def delete(book) do
-    Repo.delete(book)
+  @spec delete(Book.t(), integer()) ::
+          {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :unauthorized}
+  def delete(book, user_id) do
+    with :ok <- BookPolicy.authorize(:book_delete, user_id, book) do
+      Repo.delete(book)
+    end
   end
 
   @doc """

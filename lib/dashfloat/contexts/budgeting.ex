@@ -41,19 +41,26 @@ defmodule DashFloat.Budgeting do
   defdelegate create_book(attrs, user_id), to: CreateBook, as: :call
 
   @doc """
-  Deletes a `Book`.
+  Deletes a `Book` associated with the given `user_id`.
+
+  Returns an error if the role is unauthorized or if there
+  is no association between the `Book` and `User`.
 
   ## Examples
 
-      iex> delete_book(book)
+      iex> delete_book(book, user_id)
       {:ok, %Book{}}
 
-      iex> delete_book(book)
+      iex> delete_book(book, user_id)
       {:error, %Ecto.Changeset{}}
 
+      iex> delete_book(book, unauthorized_user_id)
+      {:error, :unauthorized}
+
   """
-  @spec delete_book(Book.t()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate delete_book(book), to: BookRepository, as: :delete
+  @spec delete_book(Book.t(), integer()) ::
+          {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :unauthorized}
+  defdelegate delete_book(book, user_id), to: BookRepository, as: :delete
 
   @doc """
   Gets a single `Book` associated with the given `user_id`.
@@ -103,6 +110,7 @@ defmodule DashFloat.Budgeting do
       {:error, :unauthorized}
 
   """
-  @spec update_book(Book.t(), map(), integer()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :unauthorized}
+  @spec update_book(Book.t(), map(), integer()) ::
+          {:ok, Book.t()} | {:error, Ecto.Changeset.t()} | {:error, :unauthorized}
   defdelegate update_book(book, attrs, user_id), to: BookRepository, as: :update
 end
