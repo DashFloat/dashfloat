@@ -60,6 +60,7 @@ defmodule DashFloat.MixProject do
       {:floki, "0.35.2", only: :test},
       {:gettext, "0.23.1"},
       {:jason, "1.4.1"},
+      {:let_me, "1.2.2"},
       {:phoenix, "1.7.9"},
       {:phoenix_ecto, "4.4.2"},
       {:phoenix_html, "3.3.3"},

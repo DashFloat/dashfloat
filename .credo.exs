@@ -138,6 +138,7 @@
            [
              files: %{
                excluded: [
+                 ~r"/lib/dashfloat/contexts/budgeting/policies/checks/",
                  ~r"/lib/dashfloat_web/controllers/",
                  ~r"/lib/dashfloat_web/live/"
                ]
