@@ -4,13 +4,13 @@ defmodule DashFloat.Budgeting.Services.CreateBook do
 
   ## Examples
 
-      iex> CreateBook.call(%{field: value}, 123)
+      iex> CreateBook.call(%{field: value}, user_id)
       {:ok, %Book{}}
 
-      iex> CreateBook.call(%{field: bad_value}, 123)
+      iex> CreateBook.call(%{field: bad_value}, user_id)
       {:error, %Ecto.Changeset{}}
 
-      iex> CreateBook.call(%{field: value}, 456)
+      iex> CreateBook.call(%{field: value}, non_existing_user_id)
       {:error, :user_not_found}
 
   """

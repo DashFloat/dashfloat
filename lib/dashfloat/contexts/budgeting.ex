@@ -26,13 +26,13 @@ defmodule DashFloat.Budgeting do
 
   ## Examples
 
-      iex> create_book(123, %{field: value})
+      iex> create_book(%{field: value}, user_id)
       {:ok, %Book{}}
 
-      iex> create_book(123, %{field: bad_value})
+      iex> create_book(%{field: bad_value}, user_id)
       {:error, %Ecto.Changeset{}}
 
-      iex> create_book(456, %{field: value})
+      iex> create_book(%{field: value}, non_existing_user_id)
       {:error, :user_not_found}
 
   """
