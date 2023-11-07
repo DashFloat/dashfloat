@@ -17,14 +17,14 @@ defmodule DashFloatWeb.UserLoginLive do
               <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Sign in to your account
               </h1>
-              <FormComponent.simple_form
+              <FormComponents.simple_form
                 for={@form}
                 id="login_form"
                 action={~p"/users/log_in"}
                 phx-update="ignore"
               >
-                <FormComponent.input field={@form[:email]} type="email" label="Email" required />
-                <FormComponent.input
+                <FormComponents.input field={@form[:email]} type="email" label="Email" required />
+                <FormComponents.input
                   field={@form[:password]}
                   type="password"
                   label="Password"
@@ -32,7 +32,7 @@ defmodule DashFloatWeb.UserLoginLive do
                 />
 
                 <:actions>
-                  <FormComponent.input
+                  <FormComponents.input
                     field={@form[:remember_me]}
                     type="checkbox"
                     label="Keep me logged in"
@@ -42,9 +42,9 @@ defmodule DashFloatWeb.UserLoginLive do
                   </.link>
                 </:actions>
                 <:actions>
-                  <FormComponent.button phx-disable-with="Signing in..." class="w-full">
+                  <FormComponents.button phx-disable-with="Signing in..." class="w-full">
                     Sign in <span aria-hidden="true">→</span>
-                  </FormComponent.button>
+                  </FormComponents.button>
                 </:actions>
                 <:actions>
                   <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -57,7 +57,7 @@ defmodule DashFloatWeb.UserLoginLive do
                     </.link>
                   </p>
                 </:actions>
-              </FormComponent.simple_form>
+              </FormComponents.simple_form>
             </div>
           </div>
         </div>

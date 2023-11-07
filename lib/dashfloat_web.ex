@@ -93,8 +93,8 @@ defmodule DashFloatWeb do
       # Routes generation with the ~p sigil
       unquote(verified_routes())
 
-      alias DashFloatWeb.Components.FormComponent
-      alias DashFloatWeb.Components.LayoutComponent
+      alias DashFloatWeb.Components.FormComponents
+      alias DashFloatWeb.Components.LayoutComponents
     end
   end
 

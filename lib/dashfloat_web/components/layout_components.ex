@@ -1,4 +1,4 @@
-defmodule DashFloatWeb.Components.LayoutComponent do
+defmodule DashFloatWeb.Components.LayoutComponents do
   @moduledoc false
 
   use DashFloatWeb, :verified_routes

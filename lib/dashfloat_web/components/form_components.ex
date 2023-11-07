@@ -1,10 +1,10 @@
-defmodule DashFloatWeb.Components.FormComponent do
+defmodule DashFloatWeb.Components.FormComponents do
   @moduledoc false
 
   use DashFloatWeb, :verified_routes
   use Phoenix.Component
 
-  alias DashFloatWeb.Components.LayoutComponent
+  alias DashFloatWeb.Components.LayoutComponents
 
   @doc """
   Renders a simple form.
@@ -126,7 +126,7 @@ defmodule DashFloatWeb.Components.FormComponent do
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
-    |> assign(:errors, Enum.map(field.errors, &LayoutComponent.translate_error(&1)))
+    |> assign(:errors, Enum.map(field.errors, &LayoutComponents.translate_error(&1)))
     |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
     |> assign_new(:value, fn -> field.value end)
     |> input()
@@ -245,7 +245,7 @@ defmodule DashFloatWeb.Components.FormComponent do
   def error(assigns) do
     ~H"""
     <p class="mt-3 flex gap-3 text-sm leading-6 text-rose-600 phx-no-feedback:hidden">
-      <LayoutComponent.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
+      <LayoutComponents.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
       <%= render_slot(@inner_block) %>
     </p>
     """
