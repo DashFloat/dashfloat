@@ -5,36 +5,71 @@ defmodule DashFloatWeb.UserResetPasswordLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">Reset Password</.header>
+    <main>
+      <section class="bg-gray-50 dark:bg-gray-900">
+        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+          <.link
+            navigate={~p"/"}
+            class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
+          >
+            DashFloat
+          </.link>
+          <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+              <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                Reset Password
+              </h1>
+              <FormComponents.simple_form
+                for={@form}
+                id="reset_password_form"
+                phx-submit="reset_password"
+                phx-change="validate"
+              >
+                <FormComponents.error :if={@form.errors != []}>
+                  Oops, something went wrong! Please check the errors below.
+                </FormComponents.error>
 
-      <.simple_form
-        for={@form}
-        id="reset_password_form"
-        phx-submit="reset_password"
-        phx-change="validate"
-      >
-        <.error :if={@form.errors != []}>
-          Oops, something went wrong! Please check the errors below.
-        </.error>
+                <FormComponents.input
+                  field={@form[:password]}
+                  type="password"
+                  label="New password"
+                  required
+                />
+                <FormComponents.input
+                  field={@form[:password_confirmation]}
+                  type="password"
+                  label="Confirm new password"
+                  required
+                />
 
-        <.input field={@form[:password]} type="password" label="New password" required />
-        <.input
-          field={@form[:password_confirmation]}
-          type="password"
-          label="Confirm new password"
-          required
-        />
-        <:actions>
-          <.button phx-disable-with="Resetting..." class="w-full">Reset Password</.button>
-        </:actions>
-      </.simple_form>
-
-      <p class="text-center text-sm mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        | <.link href={~p"/users/log_in"}>Log in</.link>
-      </p>
-    </div>
+                <:actions>
+                  <FormComponents.button phx-disable-with="Resetting..." class="w-full">
+                    Reset Password
+                  </FormComponents.button>
+                </:actions>
+                <:actions>
+                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    <.link
+                      href={~p"/users/register"}
+                      class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    >
+                      Register
+                    </.link>
+                    |
+                    <.link
+                      href={~p"/users/log_in"}
+                      class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    >
+                      Log in
+                    </.link>
+                  </p>
+                </:actions>
+              </FormComponents.simple_form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
     """
   end
 
@@ -50,7 +85,7 @@ defmodule DashFloatWeb.UserResetPasswordLive do
           %{}
       end
 
-    {:ok, assign_form(socket, form_source), temporary_assigns: [form: nil]}
+    {:ok, assign_form(socket, form_source), temporary_assigns: [form: nil], layout: false}
   end
 
   # Do not log in the user after reset password to avoid a
