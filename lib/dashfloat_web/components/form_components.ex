@@ -209,7 +209,7 @@ defmodule DashFloatWeb.Components.FormComponents do
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
         class={[
           "border bg-gray-50 sm:text-sm rounded-lg block w-full p-2.5",
-          "text-gray-900 dark:text-white dark:placeholder-gray-400",
+          "text-gray-900 dark:text-white dark:placeholder-gray-400 dark:bg-gray-700",
           "phx-no-feedback:border-gray-300 phx-no-feedback:focus:border-primary-600",
           "phx-no-feedback:dark:border-gray-600 phx-no-feedback:dark:focus:border-blue-500",
           "focus:ring-primary-600 dark:focus:ring-blue-500",
