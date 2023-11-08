@@ -99,7 +99,7 @@
              if_called_more_often_than: 0,
              files: %{
                excluded: [
-                 ~r"/lib/dashfloat_web/components/form_component.ex"
+                 ~r"/lib/dashfloat_web/components/form_components.ex"
                ]
              }
            ]},

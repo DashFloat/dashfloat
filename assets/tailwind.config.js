@@ -12,6 +12,7 @@ module.exports = {
     "../lib/dashfloat_web/**/*.*ex",
     "./node_modules/flowbite/**/*.js"
   ],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {

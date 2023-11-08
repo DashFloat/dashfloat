@@ -37,7 +37,10 @@ defmodule DashFloatWeb.UserLoginLive do
                     type="checkbox"
                     label="Keep me logged in"
                   />
-                  <.link navigate={~p"/users/reset_password"} class="text-sm font-semibold">
+                  <.link
+                    href={~p"/users/reset_password"}
+                    class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
+                  >
                     Forgot your password?
                   </.link>
                 </:actions>
