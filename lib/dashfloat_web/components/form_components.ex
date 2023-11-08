@@ -250,4 +250,25 @@ defmodule DashFloatWeb.Components.FormComponents do
     </p>
     """
   end
+
+  @doc """
+  Renders a header with title.
+  """
+  attr :class, :string, default: nil
+
+  slot :inner_block, required: true
+  slot :subtitle
+
+  def header(assigns) do
+    ~H"""
+    <div>
+      <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+        <%= render_slot(@inner_block) %>
+      </h1>
+      <p :if={@subtitle != []} class="font-light text-gray-500 dark:text-gray-400">
+        <%= render_slot(@subtitle) %>
+      </p>
+    </div>
+    """
+  end
 end

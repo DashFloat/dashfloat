@@ -16,12 +16,10 @@ defmodule DashFloatWeb.UserForgotPasswordLive do
           </.link>
           <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
             <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+              <FormComponents.header>
                 Forgot your password?
-              </h1>
-              <p class="font-light text-gray-500 dark:text-gray-400">
-                We'll send a password reset link to your inbox
-              </p>
+                <:subtitle>We'll send a password reset link to your inbox</:subtitle>
+              </FormComponents.header>
               <FormComponents.simple_form for={@form} id="reset_password_form" phx-submit="send_email">
                 <FormComponents.input field={@form[:email]} type="email" label="Email" required />
 
