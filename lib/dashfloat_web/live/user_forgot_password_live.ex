@@ -33,14 +33,14 @@ defmodule DashFloatWeb.UserForgotPasswordLive do
                 <:actions>
                   <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
                     <.link
-                      navigate={~p"/users/register"}
+                      href={~p"/users/register"}
                       class="font-medium text-primary-600 hover:underline dark:text-primary-500"
                     >
                       Register
                     </.link>
                     |
                     <.link
-                      navigate={~p"/users/log_in"}
+                      href={~p"/users/log_in"}
                       class="font-medium text-primary-600 hover:underline dark:text-primary-500"
                     >
                       Log in
