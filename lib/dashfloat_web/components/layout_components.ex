@@ -9,11 +9,11 @@ defmodule DashFloatWeb.Components.LayoutComponents do
     <header>
       <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
         <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-          <a href="/" class="flex items-center">
+          <.link navigate={~p"/"} class="flex items-center">
             <span class="self-center text-base md:text-xl font-semibold whitespace-nowrap dark:text-white">
               DashFloat
             </span>
-          </a>
+          </.link>
           <div class="flex items-center lg:order-2">
             <button
               data-tooltip-target="tooltip-dark"
@@ -71,7 +71,7 @@ defmodule DashFloatWeb.Components.LayoutComponents do
                 >
                   <li>
                     <.link
-                      href={~p"/users/settings"}
+                      navigate={~p"/users/settings"}
                       class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                     >
                       Account Settings
@@ -84,7 +84,7 @@ defmodule DashFloatWeb.Components.LayoutComponents do
                 >
                   <li>
                     <.link
-                      href={~p"/users/log_out"}
+                      navigate={~p"/users/log_out"}
                       method="delete"
                       class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
@@ -95,13 +95,13 @@ defmodule DashFloatWeb.Components.LayoutComponents do
               </div>
             <% else %>
               <.link
-                href={~p"/users/log_in"}
+                navigate={~p"/users/log_in"}
                 class="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
               >
                 Sign In
               </.link>
               <.link
-                href={~p"/users/register"}
+                navigate={~p"/users/register"}
                 class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
               >
                 Sign Up
@@ -209,12 +209,12 @@ defmodule DashFloatWeb.Components.LayoutComponents do
     ~H"""
     <footer class="p-4 bg-white md:p-8 lg:p-10 dark:bg-gray-800">
       <div class="mx-auto max-w-screen-xl text-center">
-        <a
-          href="#"
+        <.link
+          navigate={~p"/"}
           class="flex justify-center items-center text-2xl font-semibold text-gray-900 dark:text-white"
         >
           DashFloat
-        </a>
+        </.link>
         <p class="my-6 text-gray-500 dark:text-gray-400">
           Open-source library of over 400+ web components and interactive elements built for better web.
         </p>
