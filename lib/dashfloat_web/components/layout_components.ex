@@ -52,7 +52,7 @@ defmodule DashFloatWeb.Components.LayoutComponents do
                 >
                   <li>
                     <.link
-                      navigate={~p"/users/settings"}
+                      href={~p"/users/settings"}
                       class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                     >
                       Account Settings
@@ -65,7 +65,7 @@ defmodule DashFloatWeb.Components.LayoutComponents do
                 >
                   <li>
                     <.link
-                      navigate={~p"/users/log_out"}
+                      href={~p"/users/log_out"}
                       method="delete"
                       class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
@@ -76,13 +76,13 @@ defmodule DashFloatWeb.Components.LayoutComponents do
               </div>
             <% else %>
               <.link
-                navigate={~p"/users/log_in"}
+                href={~p"/users/log_in"}
                 class="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
               >
                 Sign In
               </.link>
               <.link
-                navigate={~p"/users/register"}
+                href={~p"/users/register"}
                 class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
               >
                 Sign Up
