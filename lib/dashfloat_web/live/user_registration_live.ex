@@ -6,39 +6,64 @@ defmodule DashFloatWeb.UserRegistrationLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        Register for an account
-        <:subtitle>
-          Already registered?
-          <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-            Sign in
+    <main>
+      <section class="bg-gray-50 dark:bg-gray-900">
+        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+          <.link
+            navigate={~p"/"}
+            class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
+          >
+            DashFloat
           </.link>
-          to your account now.
-        </:subtitle>
-      </.header>
+          <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+              <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                Register for an account
+              </h1>
+              <FormComponents.simple_form
+                for={@form}
+                id="registration_form"
+                phx-submit="save"
+                phx-change="validate"
+                phx-trigger-action={@trigger_submit}
+                action={~p"/users/log_in?_action=registered"}
+                method="post"
+              >
+                <FormComponents.error :if={@check_errors}>
+                  Oops, something went wrong! Please check the errors below.
+                </FormComponents.error>
 
-      <.simple_form
-        for={@form}
-        id="registration_form"
-        phx-submit="save"
-        phx-change="validate"
-        phx-trigger-action={@trigger_submit}
-        action={~p"/users/log_in?_action=registered"}
-        method="post"
-      >
-        <.error :if={@check_errors}>
-          Oops, something went wrong! Please check the errors below.
-        </.error>
+                <FormComponents.input field={@form[:email]} type="email" label="Email" required />
+                <FormComponents.input
+                  field={@form[:password]}
+                  type="password"
+                  label="Password"
+                  required
+                />
 
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
-
-        <:actions>
-          <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
-        </:actions>
-      </.simple_form>
-    </div>
+                <:actions>
+                  <FormComponents.button phx-disable-with="Creating account..." class="w-full">
+                    Create an account
+                  </FormComponents.button>
+                </:actions>
+                <:actions>
+                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Already registered?
+                    <.link
+                      navigate={~p"/users/log_in"}
+                      class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    >
+                      Sign in
+                    </.link>
+                    to your account now.
+                  </p>
+                </:actions>
+              </FormComponents.simple_form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
     """
   end
 
@@ -50,7 +75,7 @@ defmodule DashFloatWeb.UserRegistrationLive do
       |> assign(trigger_submit: false, check_errors: false)
       |> assign_form(changeset)
 
-    {:ok, socket, temporary_assigns: [form: nil]}
+    {:ok, socket, temporary_assigns: [form: nil], layout: false}
   end
 
   def handle_event("save", %{"user" => user_params}, socket) do
