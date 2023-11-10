@@ -7,23 +7,23 @@ defmodule DashFloatWeb.BookLive.FormComponent do
   def render(assigns) do
     ~H"""
     <div>
-      <.header>
+      <FormComponents.header>
         <%= @title %>
-        <:subtitle>Use this form to manage book records in your database.</:subtitle>
-      </.header>
+        <:subtitle>A Book connects everything that's related to your budget.</:subtitle>
+      </FormComponents.header>
 
-      <.simple_form
+      <FormComponents.simple_form
         for={@form}
         id="book-form"
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:name]} type="text" label="Name" />
+        <FormComponents.input field={@form[:name]} type="text" label="Name" />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Book</.button>
+          <FormComponents.button phx-disable-with="Saving...">Save Book</FormComponents.button>
         </:actions>
-      </.simple_form>
+      </FormComponents.simple_form>
     </div>
     """
   end

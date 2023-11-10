@@ -261,7 +261,7 @@ defmodule DashFloatWeb.Components.FormComponents do
 
   def header(assigns) do
     ~H"""
-    <div>
+    <div class="mb-3 pb-3 border-b dark:border-gray-600">
       <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
         <%= render_slot(@inner_block) %>
       </h1>
