@@ -7,16 +7,18 @@ defmodule DashFloatWeb.BookLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <.header>
-      Listing Books
+    <TableComponents.header>
+      Your Books
       <:actions>
         <.link patch={~p"/books/new"}>
-          <.button>New Book</.button>
+          <FormComponents.button class="flex items-center justify-center space-x-4">
+            <LayoutComponents.icon name="hero-plus-mini" class="mr-0.8" /> New Book
+          </FormComponents.button>
         </.link>
       </:actions>
-    </.header>
+    </TableComponents.header>
 
-    <.table id="books" rows={@streams.books}>
+    <TableComponents.simple_table id="books" rows={@streams.books}>
       <:col :let={{_id, book}} label="Name"><%= book.name %></:col>
       <:action :let={{_id, book}}>
         <.link patch={~p"/books/#{book}/edit"}>Edit</.link>
@@ -29,7 +31,7 @@ defmodule DashFloatWeb.BookLive.Index do
           Delete
         </.link>
       </:action>
-    </.table>
+    </TableComponents.simple_table>
 
     <.modal :if={@live_action in [:new, :edit]} id="book-modal" show on_cancel={JS.patch(~p"/books")}>
       <.live_component

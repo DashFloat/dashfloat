@@ -95,6 +95,7 @@ defmodule DashFloatWeb do
 
       alias DashFloatWeb.Components.FormComponents
       alias DashFloatWeb.Components.LayoutComponents
+      alias DashFloatWeb.Components.TableComponents
     end
   end
 
