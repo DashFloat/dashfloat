@@ -5,27 +5,61 @@ defmodule DashFloatWeb.UserConfirmationLive do
 
   def render(%{live_action: :edit} = assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">Confirm Account</.header>
+    <main>
+      <section class="bg-gray-50 dark:bg-gray-900">
+        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+          <.link
+            navigate={~p"/"}
+            class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
+          >
+            DashFloat
+          </.link>
+          <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+              <FormComponents.header>
+                Confirm Account
+              </FormComponents.header>
+              <FormComponents.simple_form
+                for={@form}
+                id="confirmation_form"
+                phx-submit="confirm_account"
+              >
+                <FormComponents.input field={@form[:token]} type="hidden" />
 
-      <.simple_form for={@form} id="confirmation_form" phx-submit="confirm_account">
-        <.input field={@form[:token]} type="hidden" />
-        <:actions>
-          <.button phx-disable-with="Confirming..." class="w-full">Confirm my account</.button>
-        </:actions>
-      </.simple_form>
-
-      <p class="text-center mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        | <.link href={~p"/users/log_in"}>Log in</.link>
-      </p>
-    </div>
+                <:actions>
+                  <FormComponents.button phx-disable-with="Confirming..." class="w-full">
+                    Confirm my account
+                  </FormComponents.button>
+                </:actions>
+                <:actions>
+                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    <.link
+                      href={~p"/users/register"}
+                      class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    >
+                      Register
+                    </.link>
+                    |
+                    <.link
+                      href={~p"/users/log_in"}
+                      class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    >
+                      Log in
+                    </.link>
+                  </p>
+                </:actions>
+              </FormComponents.simple_form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
     """
   end
 
   def mount(%{"token" => token}, _session, socket) do
     form = to_form(%{"token" => token}, as: "user")
-    {:ok, assign(socket, form: form), temporary_assigns: [form: nil]}
+    {:ok, assign(socket, form: form), temporary_assigns: [form: nil], layout: false}
   end
 
   # Do not log in the user after confirmation to avoid a

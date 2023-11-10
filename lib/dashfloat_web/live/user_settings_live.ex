@@ -5,21 +5,21 @@ defmodule DashFloatWeb.UserSettingsLive do
 
   def render(assigns) do
     ~H"""
-    <.header class="text-center">
+    <FormComponents.header class="text-center">
       Account Settings
       <:subtitle>Manage your account email address and password settings</:subtitle>
-    </.header>
+    </FormComponents.header>
 
-    <div class="space-y-12 divide-y">
+    <div class="space-y-12 divide-y mt-4">
       <div>
-        <.simple_form
+        <FormComponents.simple_form
           for={@email_form}
           id="email_form"
           phx-submit="update_email"
           phx-change="validate_email"
         >
-          <.input field={@email_form[:email]} type="email" label="Email" required />
-          <.input
+          <FormComponents.input field={@email_form[:email]} type="email" label="Email" required />
+          <FormComponents.input
             field={@email_form[:current_password]}
             name="current_password"
             id="current_password_for_email"
@@ -29,12 +29,12 @@ defmodule DashFloatWeb.UserSettingsLive do
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Email</.button>
+            <FormComponents.button phx-disable-with="Changing...">Change Email</FormComponents.button>
           </:actions>
-        </.simple_form>
+        </FormComponents.simple_form>
       </div>
       <div>
-        <.simple_form
+        <FormComponents.simple_form
           for={@password_form}
           id="password_form"
           action={~p"/users/log_in?_action=password_updated"}
@@ -43,19 +43,24 @@ defmodule DashFloatWeb.UserSettingsLive do
           phx-submit="update_password"
           phx-trigger-action={@trigger_submit}
         >
-          <.input
+          <FormComponents.input
             field={@password_form[:email]}
             type="hidden"
             id="hidden_user_email"
             value={@current_email}
           />
-          <.input field={@password_form[:password]} type="password" label="New password" required />
-          <.input
+          <FormComponents.input
+            field={@password_form[:password]}
+            type="password"
+            label="New password"
+            required
+          />
+          <FormComponents.input
             field={@password_form[:password_confirmation]}
             type="password"
             label="Confirm new password"
           />
-          <.input
+          <FormComponents.input
             field={@password_form[:current_password]}
             name="current_password"
             type="password"
@@ -65,9 +70,11 @@ defmodule DashFloatWeb.UserSettingsLive do
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Password</.button>
+            <FormComponents.button phx-disable-with="Changing...">
+              Change Password
+            </FormComponents.button>
           </:actions>
-        </.simple_form>
+        </FormComponents.simple_form>
       </div>
     </div>
     """
