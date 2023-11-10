@@ -33,7 +33,12 @@ defmodule DashFloatWeb.BookLive.Index do
       </:action>
     </TableComponents.simple_table>
 
-    <.modal :if={@live_action in [:new, :edit]} id="book-modal" show on_cancel={JS.patch(~p"/books")}>
+    <LayoutComponents.modal
+      :if={@live_action in [:new, :edit]}
+      id="book-modal"
+      show
+      on_cancel={JS.patch(~p"/books")}
+    >
       <.live_component
         module={DashFloatWeb.BookLive.FormComponent}
         id={@book.id || :new}
@@ -43,7 +48,7 @@ defmodule DashFloatWeb.BookLive.Index do
         patch={~p"/books"}
         current_user_id={@current_user.id}
       />
-    </.modal>
+    </LayoutComponents.modal>
     """
   end
 
