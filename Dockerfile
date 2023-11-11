@@ -13,12 +13,21 @@
 #
 ARG ELIXIR_VERSION=1.15.7
 ARG OTP_VERSION=26.1
+ARG NODE_VERSION=21.0.0
 ARG DEBIAN_VERSION=bullseye-20230612-slim
 
+ARG NODE_IMAGE="node:${NODE_VERSION}-bullseye-slim"
 ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
 ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
 
+FROM ${NODE_IMAGE} as node
+
 FROM ${BUILDER_IMAGE} as builder
+
+COPY --from=node /usr/lib /usr/lib
+COPY --from=node /usr/local/lib /usr/local/lib
+COPY --from=node /usr/local/include /usr/local/include
+COPY --from=node /usr/local/bin /usr/local/bin
 
 # install build dependencies
 RUN apt-get update -y && apt-get install -y build-essential git \
@@ -50,6 +59,8 @@ COPY priv priv
 COPY lib lib
 
 COPY assets assets
+
+RUN cd assets && npm install
 
 # compile assets
 RUN mix assets.deploy
