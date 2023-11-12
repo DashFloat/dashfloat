@@ -2,6 +2,7 @@
   "skip_files": [
     "lib/dashfloat.ex",
     "lib/dashfloat/application.ex",
+    "lib/dashfloat/release.ex",
     "lib/dashfloat/repo.ex",
     "lib/dashfloat_web.ex",
     "lib/dashfloat_web/components/",
