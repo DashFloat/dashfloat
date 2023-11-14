@@ -34,6 +34,7 @@
         excluded: [
           ~r"/_build/",
           ~r"/deps/",
+          ~r"/lib/dashfloat/release.ex",
           ~r"/lib/dashfloat_web.ex",
           ~r"/lib/dashfloat_web/components/core_components.ex",
           ~r"/lib/dashfloat_web/telemetry.ex",
