@@ -4,11 +4,11 @@ on:
   push:
     branches: ["main"]
     paths-ignore:
-      - 'infrastructure/**'
+      - "infrastructure/**"
   pull_request:
     branches: ["main"]
     paths-ignore:
-      - 'infrastructure/**'
+      - "infrastructure/**"
 
 env:
   MIX_ENV: test
