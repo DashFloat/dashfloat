@@ -9,9 +9,6 @@ jobs:
     name: Preview
     runs-on: ubuntu-latest
     steps:
-      - name: Show var
-        run: |
-        echo $PULUMI_STACK_NAME
       - name: Checkout Repository
         uses: actions/checkout@v2
 
