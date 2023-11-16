@@ -1,0 +1,42 @@
+name: Pulumi
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+    paths:
+      - "infrastructure/**"
+
+jobs:
+  update:
+    name: Update
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v3.5.0
+        with:
+          node-version: latest
+
+      - name: Authenticate Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Configure Google Cloud
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - run: npm install
+        working-directory: infrastructure
+
+      - uses: pulumi/actions@v3
+        with:
+          command: up
+          work-dir: infrastructure
+          stack-name: ${{ startsWith(github.ref, 'refs/tags/v') && 'production' || 'staging' }}
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
