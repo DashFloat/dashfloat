@@ -5,6 +5,12 @@ on:
       - main
     paths:
       - 'infrastructure/**'
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+
 jobs:
   preview:
     name: Preview
