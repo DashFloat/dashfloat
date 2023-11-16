@@ -7,11 +7,6 @@ on:
       - v*
     paths:
       - "infrastructure/**"
-  workflow_run:
-    workflows:
-      - CI
-    types:
-      - completed
 
 jobs:
   update:
