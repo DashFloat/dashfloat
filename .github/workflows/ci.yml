@@ -2,21 +2,9 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
-    paths-ignore:
-      - 'infrastructure/**'
-      - '.github/pulumi*.yml'
-      - 'LICENSE'
-      - '**/README.md'
+    branches: ["main"]
   pull_request:
-    branches:
-      - main
-    paths-ignore:
-      - 'infrastructure/**'
-      - '.github/pulumi*.yml'
-      - 'LICENSE'
-      - '**/README.md'
+    branches: ["main"]
 
 env:
   MIX_ENV: test
