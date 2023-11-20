@@ -1,0 +1,21 @@
+name: Deploy (Staging)
+on:
+  push:
+    pull_request:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy To Staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Fly
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly
+        run: flyctl deploy --remote-only -c fly.staging.toml
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_STAGING_API_TOKEN }}
