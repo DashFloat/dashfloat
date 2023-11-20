@@ -13,7 +13,7 @@ kill_signal = "SIGTERM"
   release_command = "/app/bin/migrate"
 
 [env]
-  PHX_HOST = "dashfloat-production.fly.dev"
+  PHX_HOST = "www.dashfloat.com"
   PORT = "8080"
 
 [http_service]
