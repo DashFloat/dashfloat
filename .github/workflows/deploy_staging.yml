@@ -1,13 +1,18 @@
 name: Deploy (Staging)
 on:
-  push:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
     branches:
-      - main
+      - deploy-after-ci
 
 jobs:
   deploy:
     name: Deploy To Staging
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
