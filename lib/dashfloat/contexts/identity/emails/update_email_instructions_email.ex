@@ -5,6 +5,7 @@ defmodule DashFloat.Identity.Emails.UpdateEmailInstructionsEmail do
 
   import Swoosh.Email
 
+  alias DashFloat.Identity.Helpers.EmailHelper
   alias DashFloat.Identity.Schemas.User
 
   @spec call(
@@ -16,8 +17,8 @@ defmodule DashFloat.Identity.Emails.UpdateEmailInstructionsEmail do
 
     new()
     |> to(user.email)
-    |> from({"DashFloat", "contact@example.com"})
-    |> subject("Update email instructions")
+    |> from(EmailHelper.no_reply())
+    |> subject("Update Email Instructions")
     |> text_body(body)
   end
 
