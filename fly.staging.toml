@@ -15,6 +15,7 @@ kill_signal = "SIGTERM"
 [env]
   PHX_HOST = "staging.dashfloat.com"
   PORT = "8080"
+  MAIL_HOST = "dashfloat.com"
 
 [http_service]
   internal_port = 8080

@@ -5,6 +5,7 @@ defmodule DashFloat.Identity.Emails.ResetPasswordInstructionsEmail do
 
   import Swoosh.Email
 
+  alias DashFloat.Identity.Helpers.EmailHelper
   alias DashFloat.Identity.Schemas.User
 
   @spec call(
@@ -16,8 +17,8 @@ defmodule DashFloat.Identity.Emails.ResetPasswordInstructionsEmail do
 
     new()
     |> to(user.email)
-    |> from({"DashFloat", "contact@example.com"})
-    |> subject("Reset password instructions")
+    |> from(EmailHelper.no_reply())
+    |> subject("Reset Password Instructions")
     |> text_body(body)
   end
 
