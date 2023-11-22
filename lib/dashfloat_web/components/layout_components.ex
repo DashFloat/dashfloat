@@ -335,6 +335,108 @@ defmodule DashFloatWeb.Components.LayoutComponents do
     """
   end
 
+  @doc """
+  Renders flash notices.
+
+  ## Examples
+
+      <.flash kind={:info} flash={@flash} />
+      <.flash kind={:info} phx-mounted={show("#flash")}>Welcome Back!</.flash>
+  """
+  attr :id, :string, default: nil, doc: "the optional id of flash container"
+  attr :flash, :map, default: %{}, doc: "the map of flash messages to display"
+  attr :title, :string, default: nil
+  attr :kind, :atom, values: [:success, :info, :error], doc: "used for styling and flash lookup"
+  attr :rest, :global, doc: "the arbitrary HTML attributes to add to the flash container"
+
+  slot :inner_block, doc: "the optional inner block that renders the flash message"
+
+  def flash(assigns) do
+    assigns = assign_new(assigns, :id, fn -> "flash-#{assigns.kind}" end)
+
+    ~H"""
+    <div
+      :if={msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind)}
+      id={@id}
+      phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
+      role="alert"
+      class={[
+        "p-4 mb-4 border rounded-lg",
+        @kind == :success && "text-green-800 dark:text-green-400 border-green-300 dark:border-green-800 bg-green-50 dark:bg-gray-800",
+        @kind == :info && "text-yellow-800 dark:text-yellow-300 border-yellow-300 dark:border-yellow-800 bg-yellow-50 dark:bg-gray-800",
+        @kind == :error && "text-red-800 dark:text-red-400 border-red-300 dark:border-red-800 bg-red-50 dark:bg-gray-800"
+      ]}
+      {@rest}
+    >
+      <div :if={@title} class="flex items-center">
+        <.icon :if={@kind == :success} name="hero-information-circle-mini" class="flex-shrink-0 w-4 h-4 me-2" />
+        <.icon :if={@kind == :info} name="hero-information-circle-mini" class="flex-shrink-0 w-4 h-4 me-2" />
+        <.icon :if={@kind == :error} name="hero-exclamation-circle-mini" class="flex-shrink-0 w-4 h-4 me-2" />
+        <h3 class="text-lg font-medium"><%= @title %></h3>
+      </div>
+
+      <div class="mt-2 mb-4 text-sm"><%= msg %></div>
+
+      <div class="flex">
+        <button
+          type="button"
+          class={[
+            "bg-transparent border focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-3 py-1.5 text-center",
+            @kind == :success && "text-green-800 dark:text-green-400 border-green-800 dark:border-green-600 hover:bg-green-900 dark:hover:bg-green-600 hover:text-white dark:hover:text-white focus:ring-green-300 dark:focus:ring-green-800",
+            @kind == :info && "text-yellow-800 dark:text-yellow-300 border-yellow-800 dark:border-yellow-300 hover:bg-yellow-900 dark:hover:bg-yellow-300 hover:text-white dark:hover:text-gray-800 focus:ring-yellow-300 dark:focus:ring-yellow-800",
+            @kind == :error && "text-red-800 dark:text-red-500 border-red-800 dark:border-red-600 hover:bg-red-900 dark:hover:bg-red-600 hover:text-white dark:hover:text-white focus:ring-red-300 dark:focus:ring-red-800"
+          ]}
+          aria-label={gettext("Dismiss")}
+        >
+          <%= gettext("Dismiss") %>
+        </button>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
+  Shows the flash group with standard titles and content.
+
+  ## Examples
+
+      <.flash_group flash={@flash} />
+  """
+  attr :flash, :map, required: true, doc: "the map of flash messages"
+  attr :id, :string, default: "flash-group", doc: "the optional id of flash container"
+
+  def flash_group(assigns) do
+    ~H"""
+    <div id={@id}>
+      <.flash kind={:success} title="Success!" flash={@flash} id="success" />
+      <.flash kind={:info} title="Info" flash={@flash} id="info" />
+      <.flash kind={:error} title="Error!" flash={@flash} id="error" />
+      <.flash
+        id="client-error"
+        kind={:error}
+        title="We can't find the internet"
+        phx-disconnected={show(".phx-client-error #client-error")}
+        phx-connected={hide("#client-error")}
+        hidden
+      >
+        Attempting to reconnect <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
+      </.flash>
+
+      <.flash
+        id="server-error"
+        kind={:error}
+        title="Something went wrong!"
+        phx-disconnected={show(".phx-server-error #server-error")}
+        phx-connected={hide("#server-error")}
+        hidden
+      >
+        Hang in there while we get back on track
+        <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
+      </.flash>
+    </div>
+    """
+  end
+
   ## JS Commands
 
   def show(js \\ %JS{}, selector) do

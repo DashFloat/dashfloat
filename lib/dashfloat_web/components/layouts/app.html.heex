@@ -1,7 +1,7 @@
 <LayoutComponents.header current_user={@current_user} />
 <main class="px-4 py-20 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 min-h-screen">
   <div class="mx-auto max-w-2xl">
-    <.flash_group flash={@flash} />
+    <LayoutComponents.flash_group flash={@flash} />
     <%= @inner_content %>
   </div>
 </main>

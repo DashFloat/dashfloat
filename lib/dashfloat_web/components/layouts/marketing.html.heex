@@ -1,7 +1,7 @@
 <LayoutComponents.header current_user={@current_user} />
 <div class="flex flex-col min-h-screen bg-white dark:bg-gray-900">
   <main class="grow">
-    <.flash_group flash={@flash} />
+    <LayoutComponents.flash_group flash={@flash} />
     <%= @inner_content %>
     <LayoutComponents.marketing_footer />
   </main>
