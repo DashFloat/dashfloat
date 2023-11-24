@@ -24,6 +24,25 @@ defmodule DashFloat.Budgeting.Repositories.BookRepository do
   end
 
   @doc """
+  Creates a new `Book` with the given attributes.
+
+  ## Examples
+
+      iex> create(%{name: "My Book"})
+      {:ok, %Book{}}
+
+      iex> create(%{name: nil})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec create(map()) :: {:ok, Book.t()} | {:error, Ecto.Changeset.t()}
+  def create(attrs) do
+    %Book{}
+    |> Book.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
   Deletes a `Book` associated with the given `user_id`.
 
   Returns an error if the role is unauthorized or if there

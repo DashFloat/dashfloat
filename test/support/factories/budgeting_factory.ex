@@ -7,6 +7,8 @@ defmodule DashFloat.Factories.BudgetingFactory do
 
   alias DashFloat.Budgeting.Schemas.Book
   alias DashFloat.Budgeting.Schemas.BookUser
+  alias DashFloat.Budgeting.Schemas.Category
+  alias DashFloat.Budgeting.Schemas.Envelope
   alias DashFloat.Budgeting.Schemas.User
 
   def book_factory do
@@ -18,6 +20,18 @@ defmodule DashFloat.Factories.BudgetingFactory do
   def book_user_factory do
     %BookUser{
       role: :viewer
+    }
+  end
+
+  def category_factory do
+    %Category{
+      name: Faker.Food.dish()
+    }
+  end
+
+  def envelope_factory do
+    %Envelope{
+      name: Faker.Food.dish()
     }
   end
 

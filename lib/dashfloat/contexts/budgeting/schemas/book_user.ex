@@ -34,5 +34,6 @@ defmodule DashFloat.Budgeting.Schemas.BookUser do
     book_user
     |> cast(attrs, [:role, :book_id, :user_id])
     |> validate_required([:book_id, :user_id])
+    |> unique_constraint(:book_id, name: :books_users_book_id_user_id_unique_index)
   end
 end

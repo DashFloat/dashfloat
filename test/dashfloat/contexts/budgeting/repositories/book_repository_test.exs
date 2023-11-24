@@ -13,6 +13,28 @@ defmodule DashFloat.Budgeting.Repositories.BookRepositoryTest do
     end
   end
 
+  describe "create/1" do
+    test "with valid attrs creates a new book" do
+      attrs = %{name: "Test Book"}
+
+      {:ok, book} = BookRepository.create(attrs)
+
+      assert book.id
+      assert book.inserted_at
+      assert book.updated_at
+      assert book.name == "Test Book"
+    end
+
+    test "with invalid attrs returns an error changeset" do
+      attrs = %{name: nil}
+
+      {:error, changeset} = BookRepository.create(attrs)
+
+      assert changeset.errors[:name] == {"can't be blank", [validation: :required]}
+      assert Enum.count(changeset.errors) == 1
+    end
+  end
+
   describe "delete/1" do
     setup do
       book = insert(:book)
