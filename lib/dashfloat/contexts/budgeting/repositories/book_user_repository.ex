@@ -11,6 +11,11 @@ defmodule DashFloat.Budgeting.Repositories.BookUserRepository do
   @doc """
   Creates a new `BookUser` with the given attributes.
 
+  The default `role` is `:viewer` if not specified.
+
+  Creating a `BookUser` with a `Book` and `User` that are already associated
+  will return an error.
+
   ## Examples
 
       iex> create(%{book_id: 123, user_id: 123, role: :viewer})
