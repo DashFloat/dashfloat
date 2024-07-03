@@ -8,25 +8,6 @@ defmodule DashFloat.IdentityTest do
   alias DashFloat.Identity.Schemas.UserToken
   alias DashFloat.TestHelpers.IdentityTestHelper
 
-  describe "deliver_user_update_email_instructions/3" do
-    setup do
-      %{user: insert(:user)}
-    end
-
-    test "sends token through notification", %{user: user} do
-      token =
-        IdentityTestHelper.extract_user_token(fn url ->
-          Identity.deliver_user_update_email_instructions(user, "current@example.com", url)
-        end)
-
-      {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
-      assert user_token.user_id == user.id
-      assert user_token.sent_to == user.email
-      assert user_token.context == "change:current@example.com"
-    end
-  end
-
   describe "change_user_password/2" do
     test "returns a user changeset" do
       assert %Ecto.Changeset{} = changeset = Identity.change_user_password(%User{})

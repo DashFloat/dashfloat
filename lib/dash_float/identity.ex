@@ -8,6 +8,7 @@ defmodule DashFloat.Identity do
   alias DashFloat.Identity.Repositories.UserRepository
   alias DashFloat.Identity.Schemas.User
   alias DashFloat.Identity.Schemas.UserToken
+  alias DashFloat.Identity.Services.DeliverUserUpdateEmailInstructions
   alias DashFloat.Identity.Services.UpdateUserEmail
   alias DashFloat.Identity.UserNotifier
   alias DashFloat.Repo
@@ -122,13 +123,7 @@ defmodule DashFloat.Identity do
 
   """
   @spec deliver_user_update_email_instructions(user :: User.t(), current_email :: String.t(), update_email_url_fun :: (binary() -> binary())) :: {:ok, Swoosh.Email.t()} | {:error, atom()}
-  def deliver_user_update_email_instructions(%User{} = user, current_email, update_email_url_fun)
-      when is_function(update_email_url_fun, 1) do
-    {encoded_token, user_token} = UserToken.build_email_token(user, "change:#{current_email}")
-
-    Repo.insert!(user_token)
-    UserNotifier.deliver_update_email_instructions(user, update_email_url_fun.(encoded_token))
-  end
+  defdelegate deliver_user_update_email_instructions(user, current_email, update_email_url_fun), to: DeliverUserUpdateEmailInstructions, as: :call
 
   @doc """
   Returns an `%Ecto.Changeset{}` for changing the user password.
