@@ -10,6 +10,7 @@ defmodule DashFloat.Identity do
   alias DashFloat.Identity.Schemas.UserToken
   alias DashFloat.Identity.Services.DeliverUserUpdateEmailInstructions
   alias DashFloat.Identity.Services.UpdateUserEmail
+  alias DashFloat.Identity.Services.UpdateUserPassword
   alias DashFloat.Identity.UserNotifier
   alias DashFloat.Repo
 
@@ -152,21 +153,7 @@ defmodule DashFloat.Identity do
 
   """
   @spec update_user_password(user :: User.t(), password :: String.t(), attrs :: map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
-  def update_user_password(user, password, attrs) do
-    changeset =
-      user
-      |> User.password_changeset(attrs)
-      |> User.validate_current_password(password)
-
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, changeset)
-    |> Ecto.Multi.delete_all(:tokens, UserToken.by_user_and_contexts_query(user, :all))
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{user: user}} -> {:ok, user}
-      {:error, :user, changeset, _} -> {:error, changeset}
-    end
-  end
+  defdelegate update_user_password(user, password, attrs), to: UpdateUserPassword, as: :call
 
   ## Session
 

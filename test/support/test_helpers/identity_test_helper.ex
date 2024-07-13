@@ -13,4 +13,14 @@ defmodule DashFloat.TestHelpers.IdentityTestHelper do
   end
 
   def get_user!(id), do: Repo.get!(User, id)
+
+  def fetch_user_by_email_and_password(email, password) do
+    user = Repo.get_by(User, email: email)
+
+    if Bcrypt.verify_pass(password, user.hashed_password) do
+      {:ok, user}
+    else
+      {:error, :not_found}
+    end
+  end
 end
